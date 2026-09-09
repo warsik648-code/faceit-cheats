@@ -45,4 +45,10 @@ export const faqPageItems: FaqItem[] = [
     answer:
       'Commercial calls to action use one centralized external transaction URL. They are regular links, not JavaScript redirects, and they include nofollow on the transaction destination.',
   },
+  {
+    id: 'cs2-product-page',
+    question: 'Where are Counter-Strike 2 product details?',
+    answer:
+      'CS2 feature descriptions, commercial access notes, and CS2-specific questions live on the CS2 page. This FAQ stays on platform-wide topics so the two URLs do not repeat the same copy.',
+  },
 ];

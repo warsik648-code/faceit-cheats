@@ -24,6 +24,20 @@ const breadcrumbs = [homeBreadcrumb(), { label: 'FAQ', path: '/faq/' }];
         description="Short answers about FACEIT as a platform, the games this site covers, and how status claims are stored."
       />
       <Faq items={faqPageItems} />
+      <p class="cs2-link">
+        Counter-Strike 2 product questions are answered on the
+        <a href="/cs2/">CS2 page</a>.
+      </p>
     </div>
   </section>
+
+  <style>
+    .cs2-link {
+      margin-top: 1.25rem;
+    }
+
+    .cs2-link a {
+      color: #fff;
+    }
+  </style>
 </PageLayout>

@@ -22,14 +22,14 @@ export const games: Game[] = [
     path: '/cs2/',
     platformNote: 'Primary title covered for FACEIT play',
     summary:
-      'CS2 is the lead game on this site. Product details, detection notes, and availability for Counter-Strike 2 will live here.',
+      'CS2 is the lead game on this site. Open the CS2 product page for FACEIT matchmaking tools, then confirm availability on the status board.',
     featured: true,
     icon: '/icons/cs2.svg',
     seo: {
       path: '/cs2/',
-      title: 'CS2 FACEIT Cheats — Counter-Strike 2 Coverage',
+      title: 'CS2 FACEIT Cheat — Premium Counter-Strike 2 Tools',
       description:
-        'Counter-Strike 2 is the primary game covered on FACEIT Cheats. See CS2-specific status, detection notes, and product information for FACEIT play.',
+        'A premium CS2 FACEIT cheat for FACEIT matchmaking, with aimbot, ESP, radar, and triggerbot. Private access is listed here; confirm the configured label on the status page before checkout.',
     },
   },
   {

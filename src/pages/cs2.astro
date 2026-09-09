@@ -1,14 +1,250 @@
 ---
-import GamePageShell from '../components/GamePageShell.astro';
-import { getGameById } from '../data/games';
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusIndicator from '../components/StatusIndicator.astro';
+import { cs2Faqs, cs2Features, cs2Hero } from '../data/cs2';
+import { getGameById, games } from '../data/games';
+import { SITE } from '../data/site';
+import { getStatus } from '../data/status';
 import PageLayout from '../layouts/PageLayout.astro';
-import { breadcrumbJsonLd } from '../utils/jsonld';
+import { breadcrumbJsonLd, faqJsonLd } from '../utils/jsonld';
 import { homeBreadcrumb } from '../utils/seo';
 
 const game = getGameById('cs2');
+const status = getStatus('cs2');
+const related = games.filter((entry) => entry.id !== game.id);
 const breadcrumbs = [homeBreadcrumb(), { label: game.name, path: game.path }];
+const transactionHost = new URL(SITE.external.transactionUrl).host;
 ---
 
-<PageLayout seo={game.seo} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
-  <GamePageShell game={game} />
+<PageLayout
+  seo={game.seo}
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(cs2Faqs)]}
+>
+  <Hero eyebrow={cs2Hero.eyebrow} title={cs2Hero.title} description={cs2Hero.description}>
+    <Fragment slot="actions">
+      <Cta label="Get CS2 access" destination="transaction" tracking={{ ref: 'cs2-hero', game: 'cs2' }} />
+      <Cta label="Check configured CS2 status" href="/status/" variant="secondary" />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">Configured CS2 label</p>
+      <p class="hero-panel__title">{game.name}</p>
+      <p>
+        Editorial snapshot only: {status.availabilityLabel.toLowerCase()}, marked {status.detectionState}.
+        Full detection notes stay on the <a href="/status/">status page</a>.
+      </p>
+      <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+      <p class="placeholder-note">{status.placeholders.userCount}</p>
+    </aside>
+  </Hero>
+
+  <section class="section" aria-labelledby="faceit-cs2-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Platform vs game"
+        title="FACEIT CS2 is the queue, not a second game"
+        titleId="faceit-cs2-heading"
+        description="FACEIT CS2 means Counter-Strike 2 matches on FACEIT’s client and ranking. It is not a separate version of CS2, and FACEIT itself is not a title you install."
+      />
+      <p>
+        People looking for FACEIT CS2 cheats are choosing tools for that queue. The same listing is
+        sometimes called a CS2 FACEIT hack. On this site those phrases point here: one CS2 product
+        page, named modules, and a single checkout destination.
+      </p>
+      <p>
+        Platform protections are handled inside the build by default. This page does not publish
+        steps for defeating, disabling, or bypassing anti-cheat — you configure the features below,
+        not a do-it-yourself bypass kit.
+      </p>
+      <p>
+        <a href="#cs2-features">See what this CS2 FACEIT cheat includes</a>
+        , or start from the
+        <a href="/">FACEIT provider overview</a>
+        if you are still choosing a game.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="cs2-features-heading" id="cs2-features">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Feature set"
+        title="What this CS2 FACEIT cheat includes"
+        titleId="cs2-features-heading"
+        description="Combat tools first, then visual extras. Each card is a module in the same private CS2 FACEIT cheat — not a separate download."
+      />
+      <div class="feature-grid">
+        {cs2Features.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="access-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Access"
+        title="Private distribution, premium feature set"
+        titleId="access-heading"
+        description="This listing is sold as a premium CS2 FACEIT cheat: a closed build rather than a public free drop."
+      />
+      <p>
+        If you are comparing options for the best cheat for FACEIT CS2, use this page as the CS2
+        commercial brief — private invite-style access, the modules above, and checkout on
+        {transactionHost} rather than a form buried on this domain.
+      </p>
+      <p>
+        A CS2 FACEIT cheat with ESP is the default combat view; glow, radar, and silent aim are
+        switches on that same build. Availability and detection wording stay configured in one
+        place so this URL does not become a second status article.
+      </p>
+      <div class="cluster">
+        <Cta
+          label="Continue to checkout"
+          destination="transaction"
+          tracking={{ ref: 'cs2-access', game: 'cs2' }}
+        />
+        <Cta label="Read site-wide FAQ" href="/faq/" variant="secondary" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="cs2-status-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Availability snapshot"
+        title="Current CS2 label, with status detail elsewhere"
+        titleId="cs2-status-heading"
+        description="This page repeats the configured CS2 row so you can buy with context. Ban-wave notes, detection history, and working/updating write-ups belong on the status route and later blog updates."
+      />
+      <div class="status-panel">
+        <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+        <p>{status.editorialNote}</p>
+        <p class="mono">{status.placeholders.userCount}</p>
+        <p class="mono">{status.placeholders.detectionTests}</p>
+        <p class="mono">{status.placeholders.banStatistic}</p>
+        <p class="placeholder-note">
+          Placeholder figures — not live telemetry or a generated test time.
+        </p>
+      </div>
+      <p>
+        <a href="/status/">Open the status board for CS2 and the other titles</a>
+        . Reviews and patch commentary will land on
+        <a href="/reviews/">reviews</a>
+        and the
+        <a href="/blog/">blog</a>
+        when those indexes have real entries.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cs2-faq-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="CS2 questions"
+        title="Short answers before you buy"
+        titleId="cs2-faq-heading"
+        description="CS2-specific questions stay here. Broader platform questions are on the main FAQ."
+      />
+      <Faq items={cs2Faqs} />
+      <p class="board-link">
+        <a href="/faq/">Open the site-wide FAQ</a>
+        ·
+        <a href={SITE.external.supportUrl} rel="noopener noreferrer">Contact support</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="other-games-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Other titles"
+        title="Not looking for CS2?"
+        titleId="other-games-heading"
+      />
+      <nav aria-label="Other supported games">
+        <ul class="related">
+          {related.map((entry) => (
+            <li>
+              <a href={entry.path}>{entry.name}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(124 58 237 / 0.28);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .hero-panel a,
+  .copy-block a,
+  .board-link a {
+    color: #fff;
+  }
+
+  .copy-block {
+    max-width: 46rem;
+  }
+
+  .copy-block :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .status-panel {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .status-panel .mono {
+    margin: 0.35rem 0 0;
+  }
+
+  .board-link {
+    margin-top: 1.25rem;
+  }
+
+  .related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    color: #fff;
+  }
+
+  @media (min-width: 800px) {
+    .feature-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
