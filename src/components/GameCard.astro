@@ -1,0 +1,87 @@
+---
+import type { Game } from '../data/games';
+import { getStatus } from '../data/status';
+import StatusIndicator from './StatusIndicator.astro';
+
+interface Props {
+  game: Game;
+  featured?: boolean;
+}
+
+const { game, featured = game.featured } = Astro.props;
+const status = getStatus(game.id);
+---
+
+<article class:list={['game-card', featured && 'game-card--featured']}>
+  <a class="game-card__link" href={game.path}>
+    <img
+      src={game.icon}
+      alt=""
+      width="48"
+      height="48"
+      loading={featured ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+    <div class="game-card__copy">
+      {featured && <p class="mono">Primary game</p>}
+      <h3>{game.name}</h3>
+      <p>{game.platformNote}</p>
+    </div>
+  </a>
+  <div class="game-card__meta">
+    <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+    <a href={game.path}>Open {game.shortName} page</a>
+  </div>
+</article>
+
+<style>
+  .game-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    padding: 1.25rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .game-card--featured {
+    background:
+      linear-gradient(180deg, rgb(124 58 237 / 0.12), transparent 42%),
+      var(--bg-variation);
+    border-color: rgb(124 58 237 / 0.28);
+  }
+
+  .game-card__link {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1rem;
+    text-decoration: none;
+  }
+
+  .game-card h3 {
+    margin: 0.2rem 0 0.4rem;
+  }
+
+  .game-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .game-card__meta a {
+    color: #fff;
+    font-size: 0.92rem;
+  }
+
+  @media (hover: hover) {
+    .game-card:hover {
+      border-color: rgb(124 58 237 / 0.45);
+    }
+  }
+</style>

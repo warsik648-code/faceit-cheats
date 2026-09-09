@@ -1,0 +1,103 @@
+---
+import { footerNav } from '../data/navigation';
+import { SITE } from '../data/site';
+import { currentYear } from '../utils/year';
+import Cta from './Cta.astro';
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div>
+      <p class="brand">{SITE.name}</p>
+      <p>
+        FACEIT is a competitive platform. This site organizes information and products by
+        supported game — with Counter-Strike 2 first.
+      </p>
+      <Cta label="Open checkout" destination="transaction" variant="secondary" tracking={{ ref: 'footer' }} />
+    </div>
+    <nav aria-label="Games">
+      <p class="mono">Games</p>
+      <ul>
+        {footerNav.games.map((item) => <li><a href={item.path}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+    <nav aria-label="Site">
+      <p class="mono">Site</p>
+      <ul>
+        {footerNav.site.map((item) => <li><a href={item.path}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+    <div>
+      <p class="mono">Support</p>
+      <ul>
+        <li>
+          <a href={SITE.external.supportUrl} rel="noopener noreferrer">Contact support</a>
+        </li>
+        <li><a href="/status/">Detection status</a></li>
+        <li><a href="/faq/">Read the FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container site-footer__legal">
+    <p>© {currentYear()} {SITE.name}. All rights reserved.</p>
+    <p>
+      User counts, detection-test totals, and ban statistics marked as placeholders are not
+      verified figures.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 3.5rem 0 2rem;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-near-black);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .brand {
+    margin: 0 0 0.7rem;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  ul {
+    margin: 0.7rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li + li {
+    margin-top: 0.45rem;
+  }
+
+  a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #fff;
+  }
+
+  .site-footer__legal {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.92rem;
+  }
+
+  @media (min-width: 840px) {
+    .site-footer__grid {
+      grid-template-columns: 1.4fr 0.8fr 0.8fr 0.9fr;
+    }
+  }
+</style>

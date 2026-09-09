@@ -1,0 +1,28 @@
+---
+import type { Feature } from '../data/features';
+
+interface Props {
+  feature: Feature;
+}
+
+const { feature } = Astro.props;
+---
+
+<article class="feature-card">
+  <h3>{feature.title}</h3>
+  <p>{feature.description}</p>
+</article>
+
+<style>
+  .feature-card {
+    height: 100%;
+    padding: 1.25rem 1.3rem 1.4rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: rgb(15 12 24 / 0.9);
+  }
+
+  .feature-card h3 {
+    margin-bottom: 0.55rem;
+  }
+</style>

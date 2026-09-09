@@ -1,0 +1,29 @@
+---
+import Faq from '../components/Faq.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { faqPageItems } from '../data/faq';
+import { pageSeo } from '../data/seo';
+import PageLayout from '../layouts/PageLayout.astro';
+import { breadcrumbJsonLd, faqJsonLd } from '../utils/jsonld';
+import { homeBreadcrumb } from '../utils/seo';
+
+const breadcrumbs = [homeBreadcrumb(), { label: 'FAQ', path: '/faq/' }];
+---
+
+<PageLayout
+  seo={pageSeo.faq}
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(faqPageItems)]}
+>
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        titleAs="h1"
+        eyebrow="Help"
+        title="Frequently asked questions"
+        description="Short answers about FACEIT as a platform, the games this site covers, and how status claims are stored."
+      />
+      <Faq items={faqPageItems} />
+    </div>
+  </section>
+</PageLayout>

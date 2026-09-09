@@ -1,0 +1,59 @@
+---
+import { primaryNav } from '../data/navigation';
+import { isActivePath } from '../utils/urls';
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="nav-desktop" aria-label="Primary">
+  <ul>
+    {
+      primaryNav.map((item) => (
+        <li>
+          <a
+            href={item.path}
+            aria-current={isActivePath(currentPath, item.path) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .nav-desktop {
+    display: none;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: inline-flex;
+    padding: 0.45rem 0.55rem;
+    border-radius: 0.55rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.92rem;
+  }
+
+  a:hover,
+  a[aria-current='page'] {
+    color: #fff;
+    background: rgb(255 255 255 / 0.04);
+  }
+
+  @media (min-width: 1040px) {
+    .nav-desktop {
+      display: block;
+    }
+  }
+</style>

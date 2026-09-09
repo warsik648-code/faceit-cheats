@@ -1,0 +1,24 @@
+---
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusBoard from '../components/StatusBoard.astro';
+import { pageSeo } from '../data/seo';
+import PageLayout from '../layouts/PageLayout.astro';
+import { breadcrumbJsonLd } from '../utils/jsonld';
+import { homeBreadcrumb } from '../utils/seo';
+
+const breadcrumbs = [homeBreadcrumb(), { label: 'Status', path: '/status/' }];
+---
+
+<PageLayout seo={pageSeo.status} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        titleAs="h1"
+        eyebrow="Operations"
+        title="Detection and availability status"
+        description="This board reads separately configured status for each supported game. It can show undetected labels, run state, user counts, detection tests, and ban statistics. Placeholder values are marked and are not generated test timestamps."
+      />
+      <StatusBoard />
+    </div>
+  </section>
+</PageLayout>

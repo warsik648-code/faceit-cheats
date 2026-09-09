@@ -1,0 +1,82 @@
+---
+import Cta from './Cta.astro';
+import StatusIndicator from './StatusIndicator.astro';
+import type { Game } from '../data/games';
+import { games } from '../data/games';
+import { getStatus } from '../data/status';
+
+interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+const status = getStatus(game.id);
+const related = games.filter((entry) => entry.id !== game.id);
+---
+
+<section class="section">
+  <div class="container game-shell">
+    <p class="mono">{game.featured ? 'Primary game landing page' : 'Supported game'}</p>
+    <h1>{game.name}</h1>
+    <p class="lede">{game.summary}</p>
+    <div class="cluster">
+      <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+      <span class="mono">{status.availabilityLabel}</span>
+    </div>
+    <p>{status.editorialNote}</p>
+    <div class="stats">
+      <p>{status.placeholders.userCount}</p>
+      <p>{status.placeholders.detectionTests}</p>
+      <p>{status.placeholders.banStatistic}</p>
+      <p class="placeholder-note">Placeholder figures — not live telemetry or a generated test time.</p>
+    </div>
+    <div class="cluster">
+      <Cta
+        label={`Get ${game.shortName} access`}
+        destination="transaction"
+        tracking={{ ref: 'game-page', game: game.id }}
+      />
+      <Cta label="View all game status" href="/status/" variant="secondary" />
+    </div>
+    <nav class="related" aria-label="Other supported games">
+      <p class="mono">Also covered</p>
+      <ul>
+        {related.map((entry) => <li><a href={entry.path}>{entry.name}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<style>
+  .game-shell {
+    display: grid;
+    gap: 1rem;
+    max-width: 46rem;
+  }
+
+  .stats {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .stats p {
+    margin: 0.25rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .related ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.1rem;
+    margin: 0.6rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    color: #fff;
+  }
+</style>

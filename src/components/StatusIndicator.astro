@@ -1,0 +1,70 @@
+---
+import type { DetectionState, RunState } from '../data/status';
+
+interface Props {
+  detectionState: DetectionState;
+  runState: RunState;
+  label?: string;
+}
+
+const { detectionState, runState, label } = Astro.props;
+
+const detectionCopy: Record<DetectionState, string> = {
+  undetected: 'Undetected',
+  monitoring: 'Monitoring',
+  updating: 'Detection updating',
+};
+
+const runCopy: Record<RunState, string> = {
+  running: 'Running',
+  updating: 'Updating',
+  unavailable: 'Unavailable',
+};
+---
+
+<span class:list={['status', `status--${detectionState}`, `is-${runState}`]}>
+  <span class="dot" aria-hidden="true"></span>
+  <span>{label ?? `${detectionCopy[detectionState]} · ${runCopy[runState]}`}</span>
+</span>
+
+<style>
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.28rem 0.55rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.03);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--text-secondary);
+  }
+
+  .status--undetected .dot {
+    background: #34d399;
+    box-shadow: 0 0 10px rgb(52 211 153 / 0.5);
+  }
+
+  .status--monitoring .dot {
+    background: #fbbf24;
+  }
+
+  .status--updating .dot,
+  .is-updating .dot {
+    background: var(--accent-pink);
+  }
+
+  .is-unavailable {
+    color: var(--text-secondary);
+  }
+</style>

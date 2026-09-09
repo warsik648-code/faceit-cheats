@@ -1,0 +1,43 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-500.css';
+import JsonLd from '../components/JsonLd.astro';
+import Seo from '../components/Seo.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { PageSeo } from '../data/seo';
+import { SITE } from '../data/site';
+import { jsonLdGraph, organizationJsonLd, websiteJsonLd } from '../utils/jsonld';
+import { resolveSeo } from '../utils/seo';
+import '../styles/global.css';
+
+interface Props {
+  seo: PageSeo;
+  extraJsonLd?: Record<string, unknown>[];
+}
+
+const { seo, extraJsonLd = [] } = Astro.props;
+const resolved = resolveSeo(seo);
+const structuredData = jsonLdGraph([organizationJsonLd(), websiteJsonLd(), ...extraJsonLd]);
+---
+
+<!doctype html>
+<html lang={SITE.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content={SITE.themeColor} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Seo seo={resolved} />
+    <JsonLd data={structuredData} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

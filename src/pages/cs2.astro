@@ -1,0 +1,14 @@
+---
+import GamePageShell from '../components/GamePageShell.astro';
+import { getGameById } from '../data/games';
+import PageLayout from '../layouts/PageLayout.astro';
+import { breadcrumbJsonLd } from '../utils/jsonld';
+import { homeBreadcrumb } from '../utils/seo';
+
+const game = getGameById('cs2');
+const breadcrumbs = [homeBreadcrumb(), { label: game.name, path: game.path }];
+---
+
+<PageLayout seo={game.seo} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
+  <GamePageShell game={game} />
+</PageLayout>

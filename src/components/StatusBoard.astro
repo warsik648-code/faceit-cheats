@@ -1,0 +1,112 @@
+---
+import { games } from '../data/games';
+import { gameStatus } from '../data/status';
+import StatusIndicator from './StatusIndicator.astro';
+
+interface Props {
+  showPlaceholders?: boolean;
+}
+
+const { showPlaceholders = true } = Astro.props;
+---
+
+<div class="status-board" role="table" aria-label="Per-game detection and availability">
+  <div class="status-board__head" role="row">
+    <span role="columnheader">Game</span>
+    <span role="columnheader">Detection</span>
+    <span role="columnheader">Availability</span>
+    {showPlaceholders && <span role="columnheader">Placeholder figures</span>}
+  </div>
+  {
+    games.map((game) => {
+      const status = gameStatus[game.id];
+
+      return (
+        <div class="status-board__row" role="row">
+          <div role="cell">
+            <a href={game.path}>{game.name}</a>
+            <p class="note">{status.editorialNote}</p>
+          </div>
+          <div role="cell">
+            <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+          </div>
+          <div role="cell">
+            <span class="mono">{status.availabilityLabel}</span>
+          </div>
+          {showPlaceholders && (
+            <div class="placeholders" role="cell">
+              <p>{status.placeholders.userCount}</p>
+              <p>{status.placeholders.detectionTests}</p>
+              <p>{status.placeholders.banStatistic}</p>
+            </div>
+          )}
+        </div>
+      );
+    })
+  }
+</div>
+
+<style>
+  .status-board {
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+  }
+
+  .status-board__head,
+  .status-board__row {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+  }
+
+  .status-board__head {
+    background: rgb(255 255 255 / 0.03);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .status-board__row + .status-board__row {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .status-board__row a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .note,
+  .placeholders p {
+    margin: 0.4rem 0 0;
+    font-size: 0.92rem;
+  }
+
+  .placeholders p {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  @media (min-width: 840px) {
+    .status-board__head,
+    .status-board__row {
+      grid-template-columns: 1.4fr 0.9fr 0.8fr 1.2fr;
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 839px) {
+    .status-board__head {
+      display: none;
+    }
+
+    .status-board__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

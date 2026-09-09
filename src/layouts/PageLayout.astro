@@ -1,0 +1,25 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import type { PageSeo } from '../data/seo';
+import type { BreadcrumbItem } from '../utils/seo';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  seo: PageSeo;
+  breadcrumbs?: BreadcrumbItem[];
+  extraJsonLd?: Record<string, unknown>[];
+}
+
+const { seo, breadcrumbs = [], extraJsonLd = [] } = Astro.props;
+---
+
+<BaseLayout seo={seo} extraJsonLd={extraJsonLd}>
+  {
+    breadcrumbs.length > 0 && (
+      <div class="container">
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
+    )
+  }
+  <slot />
+</BaseLayout>

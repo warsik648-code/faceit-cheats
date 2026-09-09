@@ -1,0 +1,23 @@
+---
+import SectionHeading from '../../components/SectionHeading.astro';
+import { pageSeo } from '../../data/seo';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { breadcrumbJsonLd } from '../../utils/jsonld';
+import { homeBreadcrumb } from '../../utils/seo';
+
+const breadcrumbs = [homeBreadcrumb(), { label: 'Reviews', path: '/reviews/' }];
+---
+
+<PageLayout seo={pageSeo.reviews} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        titleAs="h1"
+        eyebrow="Social proof"
+        title="Reviews"
+        description="This route is reserved for verified user and editorial reviews. No review content, star ratings, or testimonials are invented here."
+      />
+      <p>When reviews are added, they will be unique to this index and linked from relevant game pages such as <a href="/cs2/">CS2</a>.</p>
+    </div>
+  </section>
+</PageLayout>

@@ -1,0 +1,74 @@
+---
+import { SITE } from '../data/site';
+import Cta from './Cta.astro';
+import NavDesktop from './NavDesktop.astro';
+import NavMobile from './NavMobile.astro';
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+      <img src="/icons/mark.svg" alt="" width="28" height="28" />
+      <span>{SITE.name}</span>
+    </a>
+    <NavDesktop />
+    <div class="site-header__end">
+      <div class="site-header__cta">
+        <Cta label="Get access" destination="transaction" tracking={{ ref: 'header' }} />
+      </div>
+      <NavMobile />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--header-height);
+    gap: 1rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+  }
+
+  .site-header__end {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .site-header__cta {
+    display: none;
+  }
+
+  @media (min-width: 1040px) {
+    .site-header__cta {
+      display: block;
+    }
+
+    .site-header__cta :global(.cta) {
+      padding: 0.65rem 0.9rem;
+    }
+
+    .site-header__cta :global(.cta__hint) {
+      display: none;
+    }
+  }
+</style>

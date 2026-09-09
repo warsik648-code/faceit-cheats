@@ -1,0 +1,50 @@
+---
+import type { FaqItem } from '../data/faq';
+
+interface Props {
+  items: FaqItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((item) => (
+      <details class="faq__item" name="faq">
+        <summary id={item.id}>{item.question}</summary>
+        <p>{item.answer}</p>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .faq__item {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    padding: 0 1rem;
+  }
+
+  summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 1rem 0;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item p {
+    padding-bottom: 1rem;
+  }
+</style>

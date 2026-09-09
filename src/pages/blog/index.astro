@@ -1,0 +1,23 @@
+---
+import SectionHeading from '../../components/SectionHeading.astro';
+import { pageSeo } from '../../data/seo';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { breadcrumbJsonLd } from '../../utils/jsonld';
+import { homeBreadcrumb } from '../../utils/seo';
+
+const breadcrumbs = [homeBreadcrumb(), { label: 'Blog', path: '/blog/' }];
+---
+
+<PageLayout seo={pageSeo.blog} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        titleAs="h1"
+        eyebrow="Editorial"
+        title="Blog"
+        description="This index is ready for later articles about game coverage, detection notes, and product changes. No posts are published in Phase 1."
+      />
+      <p>Check back after Phase 2 content work, or start from the <a href="/cs2/">CS2 page</a> and <a href="/status/">status board</a>.</p>
+    </div>
+  </section>
+</PageLayout>

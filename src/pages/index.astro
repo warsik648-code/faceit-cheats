@@ -1,0 +1,142 @@
+---
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import GameCard from '../components/GameCard.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusBoard from '../components/StatusBoard.astro';
+import StatusIndicator from '../components/StatusIndicator.astro';
+import { homepageFaqs } from '../data/faq';
+import { homepageFeatures } from '../data/features';
+import { featuredGame, games } from '../data/games';
+import { pageSeo } from '../data/seo';
+import { getStatus } from '../data/status';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { faqJsonLd } from '../utils/jsonld';
+
+const cs2Status = getStatus(featuredGame.id);
+---
+
+<BaseLayout seo={pageSeo.home} extraJsonLd={[faqJsonLd(homepageFaqs)]}>
+  <Hero
+    eyebrow="Competitive platform coverage"
+    title="Premium FACEIT Cheats"
+    description="FACEIT is a competitive gaming platform — not a game. This site organizes products, detection notes, and availability by the titles you play. Counter-Strike 2 is the primary landing page; Valorant, Overwatch 2, and Rainbow Six Siege each have their own route."
+  >
+    <Fragment slot="actions">
+      <Cta label="Open CS2 coverage" href="/cs2/" />
+      <Cta label="Get access" destination="transaction" variant="secondary" tracking={{ ref: 'home-hero' }} />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">CS2 snapshot</p>
+      <p class="hero-panel__title">Counter-Strike 2</p>
+      <p>Configured as undetected, up to date, working, and running.</p>
+      <StatusIndicator detectionState={cs2Status.detectionState} runState={cs2Status.runState} />
+      <p class="placeholder-note">{cs2Status.placeholders.userCount}</p>
+    </aside>
+  </Hero>
+
+  <section class="section" aria-labelledby="games-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Supported games"
+        title="Coverage by title, not by platform"
+        titleId="games-heading"
+        description="Browse each game independently. CS2 is featured first because it is the primary FACEIT title on this site."
+      />
+      <div class="game-grid">
+        {games.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="status-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Status board"
+        title="Real-time detection information, configured per game"
+        titleId="status-heading"
+        description="Availability, undetected labels, user counts, detection tests, and ban statistics are stored in one data file. Placeholder figures are labeled until they are replaced with verified numbers."
+      />
+      <StatusBoard />
+      <p class="board-link">
+        <a href="/status/">Open the full status page</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="features-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="What this foundation tracks"
+        title="Undetected status, availability, and claim-ready fields"
+        titleId="features-heading"
+      />
+      <div class="feature-grid">
+        {homepageFeatures.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="faq-heading">
+    <div class="container">
+      <SectionHeading eyebrow="FAQ" title="Quick answers" titleId="faq-heading" />
+      <Faq items={homepageFaqs} />
+      <p class="board-link">
+        <a href="/faq/">See all FAQ entries</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(124 58 237 / 0.28);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .game-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .board-link {
+    margin-top: 1.25rem;
+  }
+
+  .board-link a {
+    color: #fff;
+  }
+
+  @media (min-width: 800px) {
+    .game-grid {
+      grid-template-columns: 1.25fr 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .game-grid > :global(:first-child) {
+      grid-row: 1 / 3;
+    }
+
+    .feature-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
