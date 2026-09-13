@@ -1,0 +1,259 @@
+---
+import ArticleCard from '../components/ArticleCard.astro';
+import Cta from '../components/Cta.astro';
+import type { PageSeo } from '../data/seo';
+import { labelForInternalPath } from '../data/blog';
+import { getGameById } from '../data/games';
+import type { BreadcrumbItem } from '../utils/seo';
+import type { BlogPost } from '../utils/blog';
+import { formatBlogDate } from '../utils/blog';
+import PageLayout from './PageLayout.astro';
+
+interface Props {
+  seo: PageSeo;
+  breadcrumbs: BreadcrumbItem[];
+  extraJsonLd?: Record<string, unknown>[];
+  post: BlogPost;
+  related: BlogPost[];
+}
+
+const { seo, breadcrumbs, extraJsonLd = [], post, related } = Astro.props;
+const game = post.data.game ? getGameById(post.data.game) : undefined;
+const contextualLinks = post.data.relatedPages;
+---
+
+<PageLayout seo={seo} breadcrumbs={breadcrumbs} extraJsonLd={extraJsonLd}>
+  <article class="article">
+    <header class="article__header">
+      <div class="container article__intro">
+        <p class="mono">{post.data.category}</p>
+        <h1>{post.data.title}</h1>
+        <p class="lede">{post.data.description}</p>
+        <dl class="article__meta">
+          <div>
+            <dt>Published</dt>
+            <dd>
+              <time datetime={post.data.publishDate.toISOString()}>
+                {formatBlogDate(post.data.publishDate)}
+              </time>
+            </dd>
+          </div>
+          {
+            post.data.updatedDate && (
+              <div>
+                <dt>Updated</dt>
+                <dd>
+                  <time datetime={post.data.updatedDate.toISOString()}>
+                    {formatBlogDate(post.data.updatedDate)}
+                  </time>
+                </dd>
+              </div>
+            )
+          }
+          {
+            game && (
+              <div>
+                <dt>Game</dt>
+                <dd>
+                  <a href={game.path}>{game.name}</a>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </div>
+    </header>
+
+    <div class="container article__grid">
+      <div class="article__body">
+        <slot />
+      </div>
+
+      <aside class="article__aside">
+        {
+          contextualLinks.length > 0 && (
+            <div class="aside-card">
+              <p class="mono">Continue on the site</p>
+              <ul>
+                {contextualLinks.map((path) => (
+                  <li>
+                    <a href={path}>{labelForInternalPath(path)}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        <div class="aside-card aside-card--cta">
+          <p class="mono">Next step</p>
+          <p>
+            {
+              game
+                ? `This note supports the ${game.name} listing. Open that page for product detail.`
+                : 'When you are ready for a listing, open the matching game page — not checkout from here.'
+            }
+          </p>
+          <Cta
+            label={game ? `Open ${game.shortName}` : 'Browse FACEIT games'}
+            href={game ? game.path : '/'}
+            variant="secondary"
+          />
+        </div>
+      </aside>
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="section section--secondary" aria-labelledby="related-articles">
+        <div class="container">
+          <p class="mono">Related reading</p>
+          <h2 id="related-articles">Other notes on this blog</h2>
+          <div class="related-grid">
+            {related.map((entry) => (
+              <ArticleCard post={entry} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  .article__header {
+    padding: 2.5rem 0 2rem;
+    border-bottom: 1px solid var(--border-subtle);
+    background: linear-gradient(180deg, rgb(124 58 237 / 0.08), transparent 58%);
+  }
+
+  .article__intro {
+    max-width: 46rem;
+  }
+
+  .article__intro h1 {
+    margin-top: 0.45rem;
+  }
+
+  .article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem 1.75rem;
+    margin: 1.4rem 0 0;
+  }
+
+  .article__meta div {
+    margin: 0;
+  }
+
+  .article__meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .article__meta dd {
+    margin: 0.25rem 0 0;
+    color: #fff;
+  }
+
+  .article__meta a {
+    color: #fff;
+  }
+
+  .article__grid {
+    display: grid;
+    gap: 2rem;
+    padding: 2.75rem 0 3.5rem;
+  }
+
+  .article__body {
+    max-width: 46rem;
+    min-width: 0;
+  }
+
+  .article__body :global(h2) {
+    margin-top: 2.1rem;
+  }
+
+  .article__body :global(h3) {
+    margin-top: 1.5rem;
+  }
+
+  .article__body :global(p) {
+    margin-bottom: 1.15rem;
+    line-height: 1.75;
+  }
+
+  .article__body :global(ul),
+  .article__body :global(ol) {
+    margin: 0 0 1.15rem;
+    padding-left: 1.2rem;
+    color: var(--text-secondary);
+  }
+
+  .article__body :global(li + li) {
+    margin-top: 0.4rem;
+  }
+
+  .article__body :global(a) {
+    color: #fff;
+    overflow-wrap: anywhere;
+  }
+
+  .aside-card {
+    padding: 1.15rem 1.2rem 1.25rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .aside-card + .aside-card {
+    margin-top: 1rem;
+  }
+
+  .aside-card--cta {
+    border-color: rgb(124 58 237 / 0.28);
+    background:
+      linear-gradient(180deg, rgb(124 58 237 / 0.1), transparent 48%),
+      var(--bg-variation);
+  }
+
+  .aside-card ul {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .aside-card li + li {
+    margin-top: 0.5rem;
+  }
+
+  .aside-card a {
+    color: #fff;
+    overflow-wrap: anywhere;
+  }
+
+  .aside-card :global(.cta) {
+    margin-top: 1rem;
+  }
+
+  .related-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  @media (min-width: 960px) {
+    .article__grid {
+      grid-template-columns: minmax(0, 1fr) 16.5rem;
+      align-items: start;
+    }
+
+    .related-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -50,10 +50,10 @@ export const gameStatus: Record<GameId, GameStatus> = {
   'overwatch-2': {
     gameId: 'overwatch-2',
     runState: 'running',
-    detectionState: 'monitoring',
-    availabilityLabel: 'Running — monitored',
+    detectionState: 'undetected',
+    availabilityLabel: 'Working and running',
     editorialNote:
-      'Overwatch 2 is configured as running with active detection monitoring. Confirm labels before publishing.',
+      'Overwatch 2 is configured as undetected, up to date, and running. Replace placeholder figures before launch.',
     placeholders: {
       userCount: '[PLACEHOLDER: Overwatch 2 user count]',
       detectionTests: '[PLACEHOLDER: Overwatch 2 detection-test count]',
@@ -62,11 +62,11 @@ export const gameStatus: Record<GameId, GameStatus> = {
   },
   'rainbow-six-siege': {
     gameId: 'rainbow-six-siege',
-    runState: 'updating',
-    detectionState: 'updating',
-    availabilityLabel: 'Update in progress',
+    runState: 'running',
+    detectionState: 'undetected',
+    availabilityLabel: 'Working and running',
     editorialNote:
-      'Siege is configured as updating. Do not present this row as a live lab result until editorial data is filled in.',
+      'Siege is configured as undetected, up to date, and running. Replace placeholder figures before launch.',
     placeholders: {
       userCount: '[PLACEHOLDER: Siege user count]',
       detectionTests: '[PLACEHOLDER: Siege detection-test count]',

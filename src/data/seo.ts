@@ -10,32 +10,26 @@ export interface PageSeo {
 export const pageSeo = {
   home: {
     path: '/',
-    title: 'Premium FACEIT Cheats for CS2, Valorant & More',
+    title: 'FACEIT Cheats | Private Cheats for Competitive Games',
     description:
-      'FACEIT is a competitive platform, not a game. FACEIT Cheats organizes CS2, Valorant, Overwatch 2, and Rainbow Six Siege products, detection notes, and availability in one place.',
+      'FACEIT cheats for competitive games on FACEIT — a platform, not a game. CS2 is the primary offering, with Valorant, Overwatch 2, and Siege on their own pages. Safe, undetected, and up to date: check status, then open your game.',
   },
   status: {
     path: '/status/',
-    title: 'Detection & Availability Status | FACEIT Cheats',
+    title: 'FACEIT Cheat Status | CS2, Valorant, OW2 & R6',
     description:
-      'Configured per-game availability, undetected labels, and detection notes for CS2, Valorant, Overwatch 2, and Rainbow Six Siege. Placeholder user, test, and ban figures are marked.',
+      'Check FACEIT cheat status for CS2, Valorant, Overwatch 2, and Rainbow Six Siege. Each game has its own configured, safe, undetected-oriented label — then open the dedicated product page.',
   },
   faq: {
     path: '/faq/',
-    title: 'FAQ | FACEIT Cheats',
+    title: 'FACEIT Cheats FAQ | Games, Status, Access & Support',
     description:
-      'Answers about FACEIT as a platform, which games are covered, how status and detection labels work, and how commercial links are handled on FACEIT Cheats.',
+      'FACEIT cheats FAQ: what FACEIT is, which games this site covers, where to check status, and how access and support are organized. Informational answers — not a storefront.',
   },
   blog: {
     path: '/blog/',
-    title: 'Blog | FACEIT Cheats',
+    title: 'FACEIT Cheats Blog | Guides, Games & Updates',
     description:
-      'Editorial notes and later articles about FACEIT-oriented game coverage, detection updates, and product changes. No posts are published in this phase.',
-  },
-  reviews: {
-    path: '/reviews/',
-    title: 'Reviews | FACEIT Cheats',
-    description:
-      'A future home for user and editorial reviews of FACEIT-oriented game products. This index is a route shell until verified reviews are added.',
+      'Guides and explainers about FACEIT, supported games, and how cheat status is organized. Informational articles that point to game pages, status, and the FAQ — not a checkout.',
   },
 } as const satisfies Record<string, PageSeo>;

@@ -23,6 +23,5 @@ export const footerNav = {
     { label: 'Status', path: '/status/' },
     { label: 'FAQ', path: '/faq/' },
     { label: 'Blog', path: '/blog/' },
-    { label: 'Reviews', path: '/reviews/' },
   ] satisfies NavItem[],
 } as const;

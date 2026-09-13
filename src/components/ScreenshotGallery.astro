@@ -1,0 +1,102 @@
+---
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+export interface GalleryShot {
+  src: string;
+  alt: string;
+  caption: string;
+  width?: number;
+  height?: number;
+}
+
+interface Props {
+  items: readonly GalleryShot[];
+}
+
+const { items } = Astro.props;
+
+function hasPublicAsset(src: string): boolean {
+  return existsSync(resolve(process.cwd(), 'public', src.replace(/^\//, '')));
+}
+---
+
+<ul class="gallery">
+  {
+    items.map((item) => {
+      const ready = hasPublicAsset(item.src);
+
+      return (
+        <li>
+          {ready ? (
+            <img
+              src={item.src}
+              alt={item.alt}
+              width={item.width ?? 960}
+              height={item.height ?? 540}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div class="gallery__ph" role="img" aria-label={item.alt}>
+              <span class="mono">Preview slot</span>
+              <span>{item.caption}</span>
+            </div>
+          )}
+          <p>{item.caption}</p>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .gallery {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    min-width: 0;
+  }
+
+  img,
+  .gallery__ph {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  img {
+    height: auto;
+    object-fit: cover;
+  }
+
+  .gallery__ph {
+    display: grid;
+    place-content: center;
+    gap: 0.35rem;
+    text-align: center;
+    padding: 1rem;
+    background:
+      linear-gradient(135deg, rgb(236 72 153 / 0.1), transparent 55%),
+      var(--bg-variation);
+    color: var(--text-secondary);
+  }
+
+  p {
+    margin: 0.55rem 0 0;
+    font-size: 0.92rem;
+  }
+
+  @media (min-width: 800px) {
+    .gallery {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

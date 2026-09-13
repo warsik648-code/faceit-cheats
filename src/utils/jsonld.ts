@@ -40,6 +40,36 @@ export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
   };
 }
 
+export function blogPostingJsonLd(article: {
+  title: string;
+  description: string;
+  path: `/${string}` | `/${string}/`;
+  datePublished: Date;
+  dateModified?: Date;
+  author: string;
+  image?: string;
+}) {
+  const url = absoluteUrl(article.path);
+
+  return {
+    '@type': 'BlogPosting',
+    headline: article.title,
+    description: article.description,
+    datePublished: article.datePublished.toISOString(),
+    dateModified: (article.dateModified ?? article.datePublished).toISOString(),
+    author: {
+      '@type': 'Organization',
+      '@id': ORGANIZATION_ID,
+      name: article.author,
+    },
+    publisher: { '@id': ORGANIZATION_ID },
+    mainEntityOfPage: url,
+    url,
+    inLanguage: SITE.language,
+    ...(article.image ? { image: absoluteUrl(article.image) } : {}),
+  };
+}
+
 export function faqJsonLd(items: FaqItem[]) {
   return {
     '@type': 'FAQPage',

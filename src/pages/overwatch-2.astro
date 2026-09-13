@@ -1,14 +1,317 @@
 ---
-import GamePageShell from '../components/GamePageShell.astro';
-import { getGameById } from '../data/games';
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import Hero from '../components/Hero.astro';
+import ScreenshotGallery from '../components/ScreenshotGallery.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusIndicator from '../components/StatusIndicator.astro';
+import VideoPlaceholder from '../components/VideoPlaceholder.astro';
+import { getGameById, games } from '../data/games';
+import { ow2Faqs, ow2Features, ow2Hero, ow2Shots, ow2Steps } from '../data/overwatch2';
+import { getStatus } from '../data/status';
 import PageLayout from '../layouts/PageLayout.astro';
-import { breadcrumbJsonLd } from '../utils/jsonld';
+import { breadcrumbJsonLd, faqJsonLd } from '../utils/jsonld';
 import { homeBreadcrumb } from '../utils/seo';
 
 const game = getGameById('overwatch-2');
+const status = getStatus('overwatch-2');
+const related = games.filter((entry) => entry.id !== game.id);
 const breadcrumbs = [homeBreadcrumb(), { label: game.name, path: game.path }];
 ---
 
-<PageLayout seo={game.seo} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
-  <GamePageShell game={game} />
+<PageLayout
+  seo={game.seo}
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(ow2Faqs)]}
+>
+  <Hero eyebrow={ow2Hero.eyebrow} title={ow2Hero.title} description={ow2Hero.description}>
+    <Fragment slot="actions">
+      <Cta label="Get OW2 access" destination="access" tracking={{ ref: 'ow2-hero', game: 'overwatch-2' }} />
+      <Cta label="Open OW2 status row" href="/status/" variant="secondary" />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">Role-queue title</p>
+      <p class="hero-panel__title">{game.name}</p>
+      <p>
+        Configured as {status.availabilityLabel.toLowerCase()}. Detection label:
+        {status.detectionState}. Confirm guaranteed-undetected, safe, zero-bans, and ban-proof
+        wording on the <a href="/status/">status page</a>.
+      </p>
+      <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+    </aside>
+  </Hero>
+
+  <section class="section" aria-labelledby="ow2-context-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Heroes and roles"
+        title="Overwatch 2 stays the roster — FACEIT is the extra bracket"
+        titleId="ow2-context-heading"
+        description="An OW2 FACEIT cheat or OW2 FACEIT hack is still aimed at Blizzard’s hero shooter. FACEIT does not fork Overwatch 2 into another game."
+      />
+      <p>
+        Team fights in OW2 are role-locked: someone holds space, someone lands a pick, someone
+        keeps the backline alive. Visibility and target priority matter more than a single
+        first-bullet. This page is written around those fights, not around CS2 economy or
+        Valorant spike plants.
+      </p>
+      <p>
+        Ability timing — a sleep, a shatter, a pulse bomb — is why projectile prediction and
+        hero ESP sit next to aimbot. The offering is described as safe from the game’s own
+        anti-cheat. This URL does not teach anyone how to defeat or disable that stack.
+      </p>
+      <p>
+        If you wanted rifle rounds instead, use
+        <a href="/cs2/">the CS2 commercial page</a>
+        or
+        <a href="/valorant/">the Valorant listing</a>.
+        The
+        <a href="/">FACEIT hub</a>
+        is the directory when you have not picked a title yet.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="ow2-features-heading" id="ow2-features">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Role-queue tools"
+        title="What this Overwatch 2 FACEIT cheat includes"
+        titleId="ow2-features-heading"
+        description="If you are comparing the best OW2 FACEIT cheat, start here. This is the Overwatch 2 FACEIT private cheat list — a premium OW2 FACEIT cheat for hitscan, projectiles, and named heroes."
+      />
+      <div class="feature-grid">
+        {ow2Features.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ow2-flow-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Product path"
+        title="Profile first, then access"
+        titleId="ow2-flow-heading"
+        description="A premium OW2 FACEIT cheat should not dump every hero on one default. Configure the role, read status, then continue."
+      />
+      <ol class="steps">
+        {
+          ow2Steps.map((step, index) => (
+            <li>
+              <p class="mono">Step {index + 1}</p>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="cluster flow-actions">
+        <Cta
+          label="Continue to OW2 access"
+          destination="access"
+          tracking={{ ref: 'ow2-flow', game: 'overwatch-2' }}
+        />
+        <Cta label="Read the site FAQ" href="/faq/" variant="secondary" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="ow2-showcase-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Stills"
+        title="Overwatch 2 preview slots"
+        titleId="ow2-showcase-heading"
+        description="Place WebP captures in the Overwatch 2 image folder when you have them. Missing files stay as designed placeholders."
+      />
+      <ScreenshotGallery items={ow2Shots} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ow2-video-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Clip"
+        title="Team-fight showcase later"
+        titleId="ow2-video-heading"
+        description="A static frame only. No iframe, no autoplay, no third-party player until you add one on purpose."
+      />
+      <VideoPlaceholder
+        title="Overwatch 2 fight showcase"
+        note="Reserved for a future OW2 clip. Nothing loads from YouTube or Twitch on this page."
+      />
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="ow2-status-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Configured label"
+        title="OW2 availability snapshot"
+        titleId="ow2-status-heading"
+        description="Only the stored configuration is shown here. No invented detection-test counts, user totals, ban-wave numbers, timestamps, safety percentages, or uptime."
+      />
+      <div class="status-panel">
+        <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+        <p>{status.availabilityLabel}. Detection: {status.detectionState}.</p>
+      </div>
+      <p>
+        <a href="/status/">See the OW2 row on the status board</a>
+        whenever you need guaranteed-undetected, safe, zero-bans, or ban-proof language checked
+        against the current editorial label.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ow2-faq-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="OW2 questions"
+        title="Overwatch 2 answers before checkout"
+        titleId="ow2-faq-heading"
+        description="Hero-shooter questions stay here. Broader FACEIT questions belong on the main FAQ."
+      />
+      <Faq items={ow2Faqs} />
+      <p class="board-link">
+        <a href="/faq/">Open the platform FAQ</a>
+        ·
+        <Cta label="Get support" destination="support" variant="ghost" tracking={{ ref: 'ow2-faq' }} />
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="other-games-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="More titles"
+        title="Explore other FACEIT games"
+        titleId="other-games-heading"
+      />
+      <nav aria-label="Other supported games">
+        <ul class="related">
+          {
+            related.map((entry) => (
+              <li>
+                <a href={entry.path}>
+                  {entry.id === 'cs2'
+                    ? 'CS2 product page'
+                    : entry.id === 'valorant'
+                      ? 'Valorant listing'
+                      : `${entry.name} shell`}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(124 58 237 / 0.34);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(160deg, rgb(124 58 237 / 0.12), transparent 52%),
+      var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-panel a,
+  .copy-block a,
+  .board-link a {
+    color: #fff;
+  }
+
+  .copy-block {
+    max-width: 46rem;
+  }
+
+  .copy-block :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .feature-grid,
+  .steps {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .steps {
+    list-style: none;
+  }
+
+  .steps li {
+    min-width: 0;
+    padding: 1.15rem 1.2rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .steps h3 {
+    margin: 0.35rem 0 0.45rem;
+  }
+
+  .flow-actions {
+    margin-top: 1.4rem;
+  }
+
+  .status-panel {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .board-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 0.85rem;
+    margin-top: 1.25rem;
+  }
+
+  .related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    color: #fff;
+  }
+
+  @media (min-width: 800px) {
+    .feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .feature-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

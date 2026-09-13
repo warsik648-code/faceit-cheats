@@ -1,23 +1,241 @@
 ---
+import ArticleCard from '../../components/ArticleCard.astro';
+import Cta from '../../components/Cta.astro';
+import Hero from '../../components/Hero.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
+import { blogCategories, blogHero, blogLearningPaths } from '../../data/blog';
+import { getGameById } from '../../data/games';
 import { pageSeo } from '../../data/seo';
 import PageLayout from '../../layouts/PageLayout.astro';
+import { getFeaturedPosts, getPublishedPosts, postsForGame } from '../../utils/blog';
 import { breadcrumbJsonLd } from '../../utils/jsonld';
-import { homeBreadcrumb } from '../../utils/seo';
+import { blogBreadcrumb, homeBreadcrumb } from '../../utils/seo';
 
-const breadcrumbs = [homeBreadcrumb(), { label: 'Blog', path: '/blog/' }];
+const breadcrumbs = [homeBreadcrumb(), blogBreadcrumb()];
+const posts = await getPublishedPosts();
+const featured = getFeaturedPosts(posts);
+const learningPaths = blogLearningPaths.map((path) => ({
+  ...path,
+  game: getGameById(path.gameId),
+  guides: postsForGame(posts, path.gameId),
+}));
 ---
 
 <PageLayout seo={pageSeo.blog} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
-  <section class="section">
+  <Hero eyebrow={blogHero.eyebrow} title={blogHero.title} description={blogHero.description}>
+    <Fragment slot="actions">
+      <Cta label="Explore Games" href="/" />
+      <Cta label="Check Status" href="/status/" variant="secondary" />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">What lives here</p>
+      <p class="hero-panel__title">{posts.length} starter {posts.length === 1 ? 'article' : 'articles'}</p>
+      <p>
+        Platform explainers first. Commercial modules stay on each game page. Questions stay on the
+        <a href="/faq/">FAQ</a>.
+      </p>
+    </aside>
+  </Hero>
+
+  {
+    featured.length > 0 && (
+      <section class="section" aria-labelledby="featured-heading">
+        <div class="container">
+          <SectionHeading
+            eyebrow="Start here"
+            title="Featured and latest"
+            titleId="featured-heading"
+            description="Pinned explainers first. If nothing is marked featured, the newest published note appears here."
+          />
+          <div class="featured-grid">
+            {featured.map((post) => (
+              <ArticleCard post={post} featured />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section--secondary" aria-labelledby="articles-heading" id="articles">
     <div class="container">
       <SectionHeading
-        titleAs="h1"
-        eyebrow="Editorial"
-        title="Blog"
-        description="This index is ready for later articles about game coverage, detection notes, and product changes. No posts are published in Phase 1."
+        eyebrow="All published notes"
+        title="Article index"
+        titleId="articles-heading"
+        description="Every live article on this blog. Drafts never appear on this list or in the sitemap."
       />
-      <p>Check back after Phase 2 content work, or start from the <a href="/cs2/">CS2 page</a> and <a href="/status/">status board</a>.</p>
+      {
+        posts.length > 0 ? (
+          <div class="article-grid">
+            {posts.map((post) => (
+              <ArticleCard post={post} />
+            ))}
+          </div>
+        ) : (
+          <p>No published articles yet.</p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="topics-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Topics"
+        title="Browse by category"
+        titleId="topics-heading"
+        description="Category labels are ready for later filters. They do not create extra archive URLs in this phase."
+      />
+      <ul class="topic-grid">
+        {
+          blogCategories.map((category) => (
+            <li class="topic-card">
+              <p class="mono">{category.label}</p>
+              <p>{category.description}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="paths-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="By title"
+        title="Game-specific learning paths"
+        titleId="paths-heading"
+        description="Each path points at the commercial page for that game. Related guides appear here when a post is associated with the title."
+      />
+      <div class="path-grid">
+        {
+          learningPaths.map((path) => (
+            <article class="path-card">
+              <p class="mono">{path.game.shortName}</p>
+              <h3>{path.title}</h3>
+              <p>{path.description}</p>
+              {path.guides.length > 0 && (
+                <p class="path-count">
+                  {path.guides.length} related {path.guides.length === 1 ? 'guide' : 'guides'}
+                </p>
+              )}
+              <a href={path.game.path}>Open {path.game.name}</a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="blog-nav-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Elsewhere"
+        title="Games, status, and questions"
+        titleId="blog-nav-heading"
+        description="The blog does not replace the rest of the site. Use these routes when you need a listing, a label, or a short answer."
+      />
+      <p>
+        The
+        <a href="/">FACEIT provider overview</a>
+        is the game directory.
+        <a href="/status/">FACEIT cheat status</a>
+        holds configured labels.
+        The
+        <a href="/faq/">site-wide FAQ</a>
+        covers platform questions.
+      </p>
+      <div class="cluster">
+        <Cta label="Read the FAQ" href="/faq/" />
+        <Cta label="Open the status hub" href="/status/" variant="secondary" />
+      </div>
     </div>
   </section>
 </PageLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(124 58 237 / 0.28);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-panel a,
+  .path-card a,
+  .copy-block a {
+    color: #fff;
+    overflow-wrap: anywhere;
+  }
+
+  .featured-grid,
+  .article-grid,
+  .topic-grid,
+  .path-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .topic-card,
+  .path-card {
+    min-width: 0;
+    padding: 1.15rem 1.2rem 1.25rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .path-card h3 {
+    margin: 0.35rem 0 0.5rem;
+    overflow-wrap: anywhere;
+  }
+
+  .path-count {
+    margin-bottom: 0.75rem;
+    font-size: 0.92rem;
+  }
+
+  .copy-block {
+    max-width: 46rem;
+  }
+
+  .copy-block :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .copy-block .cluster {
+    margin-top: 1.35rem;
+  }
+
+  @media (min-width: 800px) {
+    .article-grid,
+    .topic-grid,
+    .path-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .featured-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .topic-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

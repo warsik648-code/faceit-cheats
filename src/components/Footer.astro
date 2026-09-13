@@ -1,8 +1,13 @@
 ---
 import { footerNav } from '../data/navigation';
 import { SITE } from '../data/site';
+import { isBlogPath, isFaqPath, isHomePath, isInternalChromePath } from '../utils/urls';
 import { currentYear } from '../utils/year';
 import Cta from './Cta.astro';
+
+const onHome = isHomePath(Astro.url.pathname);
+const exploreHub = isFaqPath(Astro.url.pathname) || isBlogPath(Astro.url.pathname);
+const internalChrome = isInternalChromePath(Astro.url.pathname);
 ---
 
 <footer class="site-footer">
@@ -13,7 +18,22 @@ import Cta from './Cta.astro';
         FACEIT is a competitive platform. This site organizes information and products by
         supported game — with Counter-Strike 2 first.
       </p>
-      <Cta label="Open checkout" destination="transaction" variant="secondary" tracking={{ ref: 'footer' }} />
+      {
+        internalChrome ? (
+          <Cta
+            label={onHome ? 'Explore CS2' : exploreHub ? 'Explore Games' : 'Open the CS2 page'}
+            href={exploreHub ? '/' : '/cs2/'}
+            variant="secondary"
+          />
+        ) : (
+          <Cta
+            label="Open checkout"
+            destination="transaction"
+            variant="secondary"
+            tracking={{ ref: 'footer' }}
+          />
+        )
+      }
     </div>
     <nav aria-label="Games">
       <p class="mono">Games</p>
@@ -31,10 +51,18 @@ import Cta from './Cta.astro';
       <p class="mono">Support</p>
       <ul>
         <li>
-          <a href={SITE.external.supportUrl} rel="noopener noreferrer">Contact support</a>
+          {
+            internalChrome ? (
+              <a href="/faq/">Read the FAQ</a>
+            ) : (
+              <a href={SITE.external.supportUrl} rel="nofollow noopener noreferrer">
+                Contact support
+              </a>
+            )
+          }
         </li>
         <li><a href="/status/">Detection status</a></li>
-        <li><a href="/faq/">Read the FAQ</a></li>
+        <li><a href="/blog/">Read the blog</a></li>
       </ul>
     </div>
   </div>
@@ -80,6 +108,7 @@ import Cta from './Cta.astro';
   a {
     color: var(--text-secondary);
     text-decoration: none;
+    overflow-wrap: anywhere;
   }
 
   a:hover {

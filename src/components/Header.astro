@@ -1,8 +1,13 @@
 ---
 import { SITE } from '../data/site';
+import { isBlogPath, isFaqPath, isHomePath, isInternalChromePath } from '../utils/urls';
 import Cta from './Cta.astro';
 import NavDesktop from './NavDesktop.astro';
 import NavMobile from './NavMobile.astro';
+
+const onHome = isHomePath(Astro.url.pathname);
+const exploreHub = isFaqPath(Astro.url.pathname) || isBlogPath(Astro.url.pathname);
+const internalChrome = isInternalChromePath(Astro.url.pathname);
 ---
 
 <header class="site-header">
@@ -14,7 +19,16 @@ import NavMobile from './NavMobile.astro';
     <NavDesktop />
     <div class="site-header__end">
       <div class="site-header__cta">
-        <Cta label="Get access" destination="transaction" tracking={{ ref: 'header' }} />
+        {
+          internalChrome ? (
+            <Cta
+              label={onHome ? 'Explore CS2' : exploreHub ? 'Explore Games' : 'Open CS2 page'}
+              href={exploreHub ? '/' : '/cs2/'}
+            />
+          ) : (
+            <Cta label="Get access" destination="transaction" tracking={{ ref: 'header' }} />
+          )
+        }
       </div>
       <NavMobile />
     </div>
@@ -36,11 +50,12 @@ import NavMobile from './NavMobile.astro';
     align-items: center;
     justify-content: space-between;
     min-height: var(--header-height);
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .brand {
     display: inline-flex;
+    min-width: 0;
     align-items: center;
     gap: 0.65rem;
     font-weight: 700;
@@ -48,14 +63,25 @@ import NavMobile from './NavMobile.astro';
     text-decoration: none;
   }
 
+  .brand span {
+    overflow-wrap: anywhere;
+  }
+
   .site-header__end {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex-shrink: 0;
   }
 
   .site-header__cta {
     display: none;
+  }
+
+  @media (max-width: 360px) {
+    .brand span {
+      font-size: 0.92rem;
+    }
   }
 
   @media (min-width: 1040px) {

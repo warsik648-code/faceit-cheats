@@ -34,3 +34,7 @@ export function resolveSeo(page: PageSeo): ResolvedSeo {
 export function homeBreadcrumb(): BreadcrumbItem {
   return { label: 'Home', path: '/' };
 }
+
+export function blogBreadcrumb(): BreadcrumbItem {
+  return { label: 'Blog', path: '/blog/' };
+}

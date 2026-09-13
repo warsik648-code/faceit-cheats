@@ -1,0 +1,106 @@
+---
+import type { BlogPost } from '../utils/blog';
+import { blogPath, formatBlogDate } from '../utils/blog';
+import { getGameById } from '../data/games';
+
+interface Props {
+  post: BlogPost;
+  featured?: boolean;
+}
+
+const { post, featured = false } = Astro.props;
+const href = blogPath(post);
+const game = post.data.game ? getGameById(post.data.game) : undefined;
+---
+
+<article class:list={['article-card', featured && 'article-card--featured']}>
+  <a class="article-card__link" href={href}>
+    <div class="article-card__meta">
+      <span class="mono">{post.data.category}</span>
+      <time datetime={post.data.publishDate.toISOString()}>{formatBlogDate(post.data.publishDate)}</time>
+    </div>
+    <h3>{post.data.title}</h3>
+    <p>{post.data.description}</p>
+  </a>
+  <div class="article-card__footer">
+    {game && <span class="badge">{game.shortName}</span>}
+    <a href={href}>Read article</a>
+  </div>
+</article>
+
+<style>
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    min-height: 100%;
+    padding: 1.25rem 1.3rem 1.3rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .article-card--featured {
+    background:
+      linear-gradient(180deg, rgb(124 58 237 / 0.12), transparent 42%),
+      var(--bg-variation);
+    border-color: rgb(124 58 237 / 0.28);
+  }
+
+  .article-card__link {
+    text-decoration: none;
+  }
+
+  .article-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.45rem 1rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .article-card__meta time {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+  }
+
+  .article-card h3 {
+    margin: 0 0 0.55rem;
+    overflow-wrap: anywhere;
+  }
+
+  .article-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.15rem;
+  }
+
+  .article-card__footer a {
+    color: #fff;
+    font-size: 0.92rem;
+    overflow-wrap: anywhere;
+  }
+
+  .badge {
+    display: inline-flex;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid rgb(124 58 237 / 0.35);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  @media (hover: hover) {
+    .article-card:hover {
+      border-color: rgb(124 58 237 / 0.45);
+    }
+  }
+</style>

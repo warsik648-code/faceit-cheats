@@ -8,42 +8,72 @@ import SectionHeading from '../components/SectionHeading.astro';
 import StatusBoard from '../components/StatusBoard.astro';
 import StatusIndicator from '../components/StatusIndicator.astro';
 import { homepageFaqs } from '../data/faq';
-import { homepageFeatures } from '../data/features';
 import { featuredGame, games } from '../data/games';
+import { homeHero, hubFeatures, providerPoints } from '../data/home';
 import { pageSeo } from '../data/seo';
 import { getStatus } from '../data/status';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { faqJsonLd } from '../utils/jsonld';
 
 const cs2Status = getStatus(featuredGame.id);
+const otherGames = games.filter((game) => !game.featured);
 ---
 
 <BaseLayout seo={pageSeo.home} extraJsonLd={[faqJsonLd(homepageFaqs)]}>
-  <Hero
-    eyebrow="Competitive platform coverage"
-    title="Premium FACEIT Cheats"
-    description="FACEIT is a competitive gaming platform — not a game. This site organizes products, detection notes, and availability by the titles you play. Counter-Strike 2 is the primary landing page; Valorant, Overwatch 2, and Rainbow Six Siege each have their own route."
-  >
+  <Hero eyebrow={homeHero.eyebrow} title={homeHero.title} description={homeHero.description}>
     <Fragment slot="actions">
-      <Cta label="Open CS2 coverage" href="/cs2/" />
-      <Cta label="Get access" destination="transaction" variant="secondary" tracking={{ ref: 'home-hero' }} />
+      <Cta label="Explore CS2" href="/cs2/" />
+      <Cta label="Check Status" href="/status/" variant="secondary" />
     </Fragment>
     <aside slot="aside" class="hero-panel">
-      <p class="mono">CS2 snapshot</p>
+      <p class="mono">Primary offering</p>
       <p class="hero-panel__title">Counter-Strike 2</p>
-      <p>Configured as undetected, up to date, working, and running.</p>
+      <p>
+        CS2 FACEIT coverage lives on its own product page. This hub only points you there and
+        repeats the configured label.
+      </p>
       <StatusIndicator detectionState={cs2Status.detectionState} runState={cs2Status.runState} />
-      <p class="placeholder-note">{cs2Status.placeholders.userCount}</p>
+      <p class="hero-panel__links">
+        <a href="/cs2/">Open the CS2 page</a>
+        ·
+        <a href="/status/">FACEIT status</a>
+      </p>
     </aside>
   </Hero>
 
-  <section class="section" aria-labelledby="games-heading">
+  <section class="section" aria-labelledby="what-are-faceit-cheats">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Platform vs games"
+        title="What Are FACEIT Cheats?"
+        titleId="what-are-faceit-cheats"
+        description="FACEIT itself is not a game. A FACEIT cheat is software for a title you already play inside FACEIT’s competitive queues."
+      />
+      <p>
+        Players search for a FACEIT hack or FACEIT hacks when they want private tools on that
+        platform. faceitcheats.net answers by naming the FACEIT games first — Counter-Strike 2,
+        Valorant, Overwatch 2, Rainbow Six Siege — then sending each visitor to a dedicated URL.
+        We do not describe FACEIT’s internal security architecture here; this section only
+        separates the platform from the games.
+      </p>
+      <p>
+        If you already know you want CS2, skip ahead to
+        <a href="/cs2/">the CS2 product page</a>.
+        If you are still choosing, use the directory below, then
+        <a href="/faq/">read the FAQ</a>
+        or later
+        <a href="/blog/">blog notes</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="games-heading">
     <div class="container">
       <SectionHeading
-        eyebrow="Supported games"
-        title="Coverage by title, not by platform"
+        eyebrow="Game directory"
+        title="Choose the FACEIT game you play"
         titleId="games-heading"
-        description="Browse each game independently. CS2 is featured first because it is the primary FACEIT title on this site."
+        description="Each card is a unique route. CS2 is marked as the primary game; the others are ready for later product pages."
       />
       <div class="game-grid">
         {games.map((game) => <GameCard game={game} />)}
@@ -51,40 +81,103 @@ const cs2Status = getStatus(featuredGame.id);
     </div>
   </section>
 
-  <section class="section section--secondary" aria-labelledby="status-heading">
+  <section class="section" aria-labelledby="provider-heading">
     <div class="container">
       <SectionHeading
-        eyebrow="Status board"
-        title="Real-time detection information, configured per game"
-        titleId="status-heading"
-        description="Availability, undetected labels, user counts, detection tests, and ban statistics are stored in one data file. Placeholder figures are labeled until they are replaced with verified numbers."
+        eyebrow="Why this hub"
+        title="A Private FACEIT Cheat Provider Built Around Each Game"
+        titleId="provider-heading"
+        description="faceitcheats.net is built as a FACEIT cheat provider: private distribution, per-game pages, and a single status source — not one article pretending to cover every title."
       />
-      <StatusBoard />
+      <div class="feature-grid">
+        {providerPoints.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="features-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Cross-game overview"
+        title="Feature categories, documented per title"
+        titleId="features-heading"
+        description="This is a map, not a claim that every module exists on every game. Exact CS2 tools are listed on the CS2 feature block."
+      />
+      <div class="feature-grid">
+        {hubFeatures.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
       <p class="board-link">
-        <a href="/status/">Open the full status page</a>
+        <a href="/cs2/#cs2-features">See the CS2 feature breakdown</a>
       </p>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="features-heading">
+  <section class="section" aria-labelledby="status-heading">
     <div class="container">
       <SectionHeading
-        eyebrow="What this foundation tracks"
-        title="Undetected status, availability, and claim-ready fields"
-        titleId="features-heading"
+        eyebrow="FACEIT status"
+        title="Configured availability across every title"
+        titleId="status-heading"
+        description="Last detection tests, bans, ban waves, and safety percentages are kept on the status page. The board below is a live read of the same configuration: low ban-ratio positioning, treated as very safe, and kept up to date."
       />
-      <div class="feature-grid">
-        {homepageFeatures.map((feature) => <FeatureCard feature={feature} />)}
+      <StatusBoard showPlaceholders={false} showNotes={false} />
+      <p class="board-link">
+        <a href="/status/">Open the full FACEIT status page</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="cs2-featured-heading">
+    <div class="container">
+      <div class="featured-cs2">
+        <SectionHeading
+          eyebrow="Primary game"
+          title="Looking for CS2 FACEIT Cheats?"
+          titleId="cs2-featured-heading"
+          description="CS2 has a dedicated commercial page. Use it for the feature breakdown, a status link, the showcase area, FAQs, and access information — this hub does not repeat that product copy."
+        />
+        <div class="cluster">
+          <Cta label="Explore CS2" href="/cs2/" />
+          <Cta label="CS2 feature list" href="/cs2/#cs2-features" variant="secondary" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="discovery-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="More FACEIT games"
+        title="Valorant, Overwatch 2, and Siege"
+        titleId="discovery-heading"
+        description="These routes exist now as dedicated shells. Later phases will write their product pages independently of CS2."
+      />
+      <div class="discover-grid">
+        {
+          otherGames.map((game) => (
+            <article class="discover-card">
+              <p class="mono">{game.shortName}</p>
+              <h3>{game.name}</h3>
+              <p>{game.hubDescription}</p>
+              <a href={game.path}>{game.hubCta}</a>
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
 
   <section class="section section--secondary" aria-labelledby="faq-heading">
     <div class="container">
-      <SectionHeading eyebrow="FAQ" title="Quick answers" titleId="faq-heading" />
+      <SectionHeading
+        eyebrow="FAQ"
+        title="FACEIT hub questions"
+        titleId="faq-heading"
+        description="Broad site questions stay here. CS2-specific product questions belong on the CS2 page."
+      />
       <Faq items={homepageFaqs} />
       <p class="board-link">
-        <a href="/faq/">See all FAQ entries</a>
+        <a href="/faq/">See the full FAQ</a>
       </p>
     </div>
   </section>
@@ -105,14 +198,31 @@ const cs2Status = getStatus(featuredGame.id);
     font-weight: 650;
     letter-spacing: -0.03em;
     line-height: 1.15;
+    overflow-wrap: anywhere;
   }
 
-  .game-grid {
-    display: grid;
-    gap: 1rem;
+  .hero-panel__links,
+  .board-link,
+  .copy-block a,
+  .discover-card a {
+    color: #fff;
   }
 
-  .feature-grid {
+  .hero-panel__links {
+    margin-top: 0.85rem;
+  }
+
+  .copy-block {
+    max-width: 46rem;
+  }
+
+  .copy-block :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .game-grid,
+  .feature-grid,
+  .discover-grid {
     display: grid;
     gap: 1rem;
   }
@@ -121,8 +231,30 @@ const cs2Status = getStatus(featuredGame.id);
     margin-top: 1.25rem;
   }
 
-  .board-link a {
-    color: #fff;
+  .featured-cs2 {
+    padding: 1.6rem 1.4rem 1.7rem;
+    border: 1px solid rgb(124 58 237 / 0.28);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(180deg, rgb(124 58 237 / 0.1), transparent 48%),
+      var(--bg-variation);
+  }
+
+  .featured-cs2 :global(.section-heading) {
+    margin-bottom: 1.15rem;
+  }
+
+  .discover-card {
+    min-width: 0;
+    padding: 1.15rem 1.2rem 1.25rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .discover-card h3 {
+    margin: 0.35rem 0 0.5rem;
+    overflow-wrap: anywhere;
   }
 
   @media (min-width: 800px) {
@@ -135,8 +267,17 @@ const cs2Status = getStatus(featuredGame.id);
       grid-row: 1 / 3;
     }
 
-    .feature-grid {
-      grid-template-columns: repeat(3, 1fr);
+    .feature-grid,
+    .discover-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 799px) {
+    .feature-grid,
+    .discover-grid,
+    .game-grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

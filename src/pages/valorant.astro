@@ -1,14 +1,311 @@
 ---
-import GamePageShell from '../components/GamePageShell.astro';
-import { getGameById } from '../data/games';
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import Hero from '../components/Hero.astro';
+import ScreenshotGallery from '../components/ScreenshotGallery.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusIndicator from '../components/StatusIndicator.astro';
+import VideoPlaceholder from '../components/VideoPlaceholder.astro';
+import { getGameById, games } from '../data/games';
+import { getStatus } from '../data/status';
+import {
+  valorantFaqs,
+  valorantFeatures,
+  valorantHero,
+  valorantShots,
+  valorantSteps,
+} from '../data/valorant';
 import PageLayout from '../layouts/PageLayout.astro';
-import { breadcrumbJsonLd } from '../utils/jsonld';
+import { breadcrumbJsonLd, faqJsonLd } from '../utils/jsonld';
 import { homeBreadcrumb } from '../utils/seo';
 
 const game = getGameById('valorant');
+const status = getStatus('valorant');
+const related = games.filter((entry) => entry.id !== game.id);
 const breadcrumbs = [homeBreadcrumb(), { label: game.name, path: game.path }];
 ---
 
-<PageLayout seo={game.seo} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
-  <GamePageShell game={game} />
+<PageLayout
+  seo={game.seo}
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(valorantFaqs)]}
+>
+  <Hero eyebrow={valorantHero.eyebrow} title={valorantHero.title} description={valorantHero.description}>
+    <Fragment slot="actions">
+      <Cta label="Get Valorant access" destination="access" tracking={{ ref: 'valorant-hero', game: 'valorant' }} />
+      <Cta label="Review Valorant on status" href="/status/" variant="secondary" />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">Agent title</p>
+      <p class="hero-panel__title">{game.name}</p>
+      <p>
+        Positioned as undetected, up to date, and available for both FACEIT and Riot queues.
+        Full labels stay on the <a href="/status/">status page</a>.
+      </p>
+      <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+    </aside>
+  </Hero>
+
+  <section class="section" aria-labelledby="overview-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="How access works"
+        title="Configure, confirm, then continue"
+        titleId="overview-heading"
+        description="A short path for a premium Valorant FACEIT cheat — and for players who only queue Riot’s own competitive playlist."
+      />
+      <ol class="steps">
+        {
+          valorantSteps.map((step, index) => (
+            <li>
+              <p class="mono">0{index + 1}</p>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="valorant-features-heading" id="valorant-features">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Agent-round tools"
+        title="Modules written for Valorant, not borrowed from CS2"
+        titleId="valorant-features-heading"
+        description="Ability fights, smoke executes, and first-bullet rifles need their own list. If you are comparing the best Valorant FACEIT cheat, start with these cards."
+      />
+      <div class="feature-grid">
+        {valorantFeatures.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
+      <p class="copy-narrow">
+        The build is described as safe from Vanguard and Riot Games anti-cheat, and safe from ban
+        in ordinary play. This page does not publish steps for defeating or disabling those
+        systems — the modules above are what you configure.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="showcase-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Visuals"
+        title="Valorant preview slots"
+        titleId="showcase-heading"
+        description="Drop WebP files into the Valorant image folder when captures are ready. Empty slots stay as designed placeholders so nothing 404s."
+      />
+      <ScreenshotGallery items={valorantShots} />
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="video-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Motion"
+        title="Showcase video comes later"
+        titleId="video-heading"
+        description="No third-party player and no autoplay on this page. A static frame holds the place until a local or consented embed is added."
+      />
+      <VideoPlaceholder
+        title="Valorant round showcase"
+        note="Reserved for a future clip. Nothing loads from Twitch, YouTube, or Kick until you add it on purpose."
+      />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faceit-valorant-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Game vs platform"
+        title="Valorant stays Valorant — FACEIT is the extra queue"
+        titleId="faceit-valorant-heading"
+        description="People type Valorant FACEIT cheat when they want tools for FACEIT’s Valorant scene. They are still launching Riot’s game."
+      />
+      <p>
+        A Valorant FACEIT hack and Valorant FACEIT cheats on this site mean one private Valorant
+        FACEIT cheat build that also covers normal Riot Games matchmaking. FACEIT does not fork
+        the title into a different shooter.
+      </p>
+      <p>
+        The same listing is meant to stay usable while you screenshare on Discord or go live on
+        TikTok, Twitch, Kick, or YouTube. Stream-friendly here means presentation and overlay
+        restraint — not a tutorial for hiding from anti-cheat.
+      </p>
+      <p>
+        Start from the
+        <a href="/">FACEIT hub</a>
+        if you are still choosing a game, or jump to
+        <a href="/cs2/">the CS2 product page</a>
+        when you need rifle economy tools instead of agents.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="valorant-status-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Configured label"
+        title="Undetected Valorant snapshot"
+        titleId="valorant-status-heading"
+        description="Valorant is configured as undetected, up to date, and available, with no ban reports attached to this snapshot. Safety-from-anti-cheat wording is editorial — confirm the live row on status."
+      />
+      <div class="status-panel">
+        <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+        <p>{status.availabilityLabel}. Detection: {status.detectionState}.</p>
+      </div>
+      <p>
+        <a href="/status/">Open the cross-game status board</a>
+        for last-test notes that should not live on this commercial URL.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="valorant-faq-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Valorant questions"
+        title="Before you buy this title"
+        titleId="valorant-faq-heading"
+        description="Valorant-only answers. Broader FACEIT questions sit on the main FAQ."
+      />
+      <Faq items={valorantFaqs} />
+      <p class="board-link">
+        <a href="/faq/">Open platform FAQ</a>
+        ·
+        <Cta label="Get support" destination="support" variant="ghost" tracking={{ ref: 'valorant-faq' }} />
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="other-games-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="More titles"
+        title="Explore other FACEIT games"
+        titleId="other-games-heading"
+      />
+      <nav aria-label="Other supported games">
+        <ul class="related">
+          {
+            related.map((entry) => (
+              <li>
+                <a href={entry.path}>{entry.id === 'cs2' ? 'CS2 commercial page' : `${entry.name} route`}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(236 72 153 / 0.32);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(180deg, rgb(236 72 153 / 0.08), transparent 50%),
+      var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .hero-panel a,
+  .copy-block a,
+  .board-link a,
+  .copy-narrow a {
+    color: #fff;
+  }
+
+  .copy-block,
+  .copy-narrow {
+    max-width: 46rem;
+  }
+
+  .copy-narrow {
+    margin-top: 1.25rem;
+  }
+
+  .copy-block :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .steps {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps li {
+    min-width: 0;
+    padding: 1.15rem 1.2rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .steps h3 {
+    margin: 0.35rem 0 0.45rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .status-panel {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .board-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 0.85rem;
+    margin-top: 1.25rem;
+  }
+
+  .related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    color: #fff;
+  }
+
+  @media (min-width: 800px) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

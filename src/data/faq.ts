@@ -6,22 +6,52 @@ export interface FaqItem {
 
 export const homepageFaqs: FaqItem[] = [
   {
+    id: 'what-are-faceit-cheats',
+    question: 'What are FACEIT cheats?',
+    answer:
+      'FACEIT cheats are private tools for games played through FACEIT’s competitive platform. A FACEIT cheat or FACEIT hack is not a separate FACEIT-only video game — it is software aimed at a supported title in that ecosystem.',
+  },
+  {
     id: 'is-faceit-a-game',
     question: 'Is FACEIT a game?',
     answer:
-      'No. FACEIT is a competitive gaming platform used to play titles such as Counter-Strike 2. This site is organized by those supported games, not as if FACEIT itself were a game.',
+      'No. FACEIT is a competitive gaming platform. Players use it to queue Counter-Strike 2 and other titles. This site therefore organizes FACEIT hacks and information by those games.',
   },
   {
-    id: 'primary-game',
-    question: 'Which game is the primary focus?',
+    id: 'which-games',
+    question: 'Which games does faceitcheats.net cover?',
     answer:
-      'Counter-Strike 2 is the primary game landing page. Valorant, Overwatch 2, and Rainbow Six Siege each have their own routes and status rows.',
+      'The current FACEIT games on this hub are Counter-Strike 2, Valorant, Overwatch 2, and Rainbow Six Siege. Each has its own route so later product copy can stay unique.',
   },
   {
-    id: 'status-board',
-    question: 'What does the status board show?',
+    id: 'is-cs2-main',
+    question: 'Is CS2 the main FACEIT game covered here?',
     answer:
-      'Each game has a separately configured availability state, detection label, and editorial note. Real-time detection information is described on the status page. Placeholder user counts, detection-test counts, and ban statistics are labeled as placeholders.',
+      'Yes. Counter-Strike 2 is the primary offering. CS2 FACEIT product detail belongs on the CS2 page; this homepage only introduces that route.',
+  },
+  {
+    id: 'where-status',
+    question: 'Where can I check product and FACEIT status?',
+    answer:
+      'Configured availability, last detection-test notes, bans, ban waves, and safety percentages are collected on the status page. The homepage board is a summary that links there.',
+  },
+  {
+    id: 'different-features',
+    question: 'Does each game have different features?',
+    answer:
+      'Yes. Treat feature lists as game-specific. The CS2 page is the reference for that title’s modules; Valorant, Overwatch 2, and Siege will document their own sets on their routes.',
+  },
+  {
+    id: 'where-purchase',
+    question: 'Where does purchasing take place?',
+    answer:
+      'Not on this homepage. Open the dedicated game page first. Access, purchase, and download actions are reserved for those product URLs and a single configured external destination.',
+  },
+  {
+    id: 'where-support',
+    question: 'Where can I get support?',
+    answer:
+      'Use the site FAQ for platform questions, or open a game page when you need product-level help. Support is not completed as a checkout action on this hub.',
   },
 ];
 
@@ -31,19 +61,19 @@ export const faqPageItems: FaqItem[] = [
     id: 'placeholders',
     question: 'Are user counts and ban statistics live?',
     answer:
-      'Not yet. Figures marked [PLACEHOLDER] are structural only and must be replaced with verified numbers. Generated timestamps are never used as proof that a product was tested at that moment.',
+      'Not yet. Figures marked [PLACEHOLDER] on the status route are structural only and must be replaced with verified numbers. Generated timestamps are never used as proof that a product was tested at that moment.',
   },
   {
     id: 'undetected',
     question: 'What do “undetected” and “ban-safe” mean on this site?',
     answer:
-      'Those words are editorial status labels configured per game. They are not a guarantee against detection or bans. Confirm every claim against current, verified data before treating a label as current.',
+      'Those words are editorial status labels configured per game. Confirm every claim against current, verified data on the status page before treating a label as current.',
   },
   {
     id: 'commercial-links',
     question: 'Where do purchase links go?',
     answer:
-      'Commercial calls to action use one centralized external transaction URL. They are regular links, not JavaScript redirects, and they include nofollow on the transaction destination.',
+      'Commercial calls to action on game pages use one centralized external destination. They are regular links, not JavaScript redirects, and they include nofollow on that destination. The homepage does not start checkout.',
   },
   {
     id: 'cs2-product-page',

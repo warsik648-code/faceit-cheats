@@ -1,9 +1,12 @@
 ---
 import { primaryNav } from '../data/navigation';
-import { isActivePath } from '../utils/urls';
+import { isActivePath, isBlogPath, isFaqPath, isHomePath, isInternalChromePath } from '../utils/urls';
 import Cta from './Cta.astro';
 
 const currentPath = Astro.url.pathname;
+const onHome = isHomePath(currentPath);
+const exploreHub = isFaqPath(currentPath) || isBlogPath(currentPath);
+const internalChrome = isInternalChromePath(currentPath);
 ---
 
 <details class="nav-mobile">
@@ -26,7 +29,16 @@ const currentPath = Astro.url.pathname;
         ))
       }
     </ul>
-    <Cta label="Get access" destination="transaction" tracking={{ ref: 'mobile-nav' }} />
+    {
+      internalChrome ? (
+        <Cta
+          label={onHome ? 'Explore CS2' : exploreHub ? 'Explore Games' : 'Open CS2 page'}
+          href={exploreHub ? '/' : '/cs2/'}
+        />
+      ) : (
+        <Cta label="Get access" destination="transaction" tracking={{ ref: 'mobile-nav' }} />
+      )
+    }
   </nav>
 </details>
 

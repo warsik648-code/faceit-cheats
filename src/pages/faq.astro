@@ -1,43 +1,183 @@
 ---
+import Cta from '../components/Cta.astro';
 import Faq from '../components/Faq.astro';
+import Hero from '../components/Hero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import { faqPageItems } from '../data/faq';
+import { faqExploreGames, faqGroups, faqHero, faqPageQuestions } from '../data/faqPage';
+import { getGameById } from '../data/games';
 import { pageSeo } from '../data/seo';
 import PageLayout from '../layouts/PageLayout.astro';
 import { breadcrumbJsonLd, faqJsonLd } from '../utils/jsonld';
 import { homeBreadcrumb } from '../utils/seo';
 
 const breadcrumbs = [homeBreadcrumb(), { label: 'FAQ', path: '/faq/' }];
+const exploreEntries = faqExploreGames.map((entry) => ({
+  ...entry,
+  game: getGameById(entry.gameId),
+}));
 ---
 
 <PageLayout
   seo={pageSeo.faq}
   breadcrumbs={breadcrumbs}
-  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(faqPageItems)]}
+  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(faqPageQuestions)]}
 >
-  <section class="section">
+  <Hero eyebrow={faqHero.eyebrow} title={faqHero.title} description={faqHero.description}>
+    <Fragment slot="actions">
+      <Cta label="Explore Games" href="/" />
+      <Cta label="Check Status" href="/status/" variant="secondary" />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">On this page</p>
+      <p class="hero-panel__title">Question groups</p>
+      <p>Jump to a topic. Each group is a short set of answers, not a second product page.</p>
+      <nav aria-label="FAQ sections">
+        <ul class="hero-panel__list">
+          {
+            faqGroups.map((group) => (
+              <li>
+                <a href={`#${group.titleId}`}>{group.title}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </aside>
+  </Hero>
+
+  {
+    faqGroups.map((group, index) => (
+      <section
+        class:list={['section', index % 2 === 1 && 'section--secondary']}
+        aria-labelledby={group.titleId}
+      >
+        <div class="container">
+          <SectionHeading
+            eyebrow={group.eyebrow}
+            title={group.title}
+            titleId={group.titleId}
+            description={group.description}
+          />
+          <Faq items={group.items} group={group.id} />
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--secondary" aria-labelledby="explore-games-heading">
     <div class="container">
       <SectionHeading
-        titleAs="h1"
-        eyebrow="Help"
-        title="Frequently asked questions"
-        description="Short answers about FACEIT as a platform, the games this site covers, and how status claims are stored."
+        eyebrow="Next step"
+        title="Explore game-specific pages"
+        titleId="explore-games-heading"
+        description="This FAQ stays informational. Commercial modules and access actions live on the four game routes."
       />
-      <Faq items={faqPageItems} />
-      <p class="cs2-link">
-        Counter-Strike 2 product questions are answered on the
-        <a href="/cs2/">CS2 page</a>.
-      </p>
+      <div class="explore-grid">
+        {
+          exploreEntries.map((entry) => (
+            <article class="explore-card">
+              <p class="mono">{entry.game.shortName}</p>
+              <h3>{entry.game.name}</h3>
+              <p>{entry.blurb}</p>
+              <a href={entry.game.path}>{entry.ctaLabel}</a>
+            </article>
+          ))
+        }
+      </div>
     </div>
   </section>
 
-  <style>
-    .cs2-link {
-      margin-top: 1.25rem;
-    }
-
-    .cs2-link a {
-      color: #fff;
-    }
-  </style>
+  <section class="section" aria-labelledby="more-on-site-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Elsewhere on the site"
+        title="More ways to keep reading"
+        titleId="more-on-site-heading"
+        description="Use these routes when a question is broader than one accordion or needs a later article."
+      />
+      <p>
+        The
+        <a href="/">FACEIT provider overview</a>
+        is the game directory.
+        <a href="/status/">FACEIT cheat status</a>
+        holds the configured board.
+        Future write-ups belong on the
+        <a href="/blog/">blog</a>.
+      </p>
+      <div class="cluster">
+        <Cta label="Browse FACEIT games" href="/" />
+        <Cta label="Open the status hub" href="/status/" variant="secondary" />
+      </div>
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(124 58 237 / 0.28);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-panel__list {
+    display: grid;
+    gap: 0.55rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-panel__list a,
+  .explore-card a,
+  .copy-block a {
+    color: #fff;
+    overflow-wrap: anywhere;
+  }
+
+  .explore-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .explore-card {
+    min-width: 0;
+    padding: 1.15rem 1.2rem 1.25rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .explore-card h3 {
+    margin: 0.35rem 0 0.5rem;
+    overflow-wrap: anywhere;
+  }
+
+  .copy-block {
+    max-width: 46rem;
+  }
+
+  .copy-block :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .copy-block .cluster {
+    margin-top: 1.35rem;
+  }
+
+  @media (min-width: 800px) {
+    .explore-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

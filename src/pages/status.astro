@@ -1,24 +1,200 @@
 ---
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import Hero from '../components/Hero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import StatusBoard from '../components/StatusBoard.astro';
+import StatusIndicator from '../components/StatusIndicator.astro';
+import { games, getGameById } from '../data/games';
 import { pageSeo } from '../data/seo';
+import { getStatus } from '../data/status';
+import { statusBoardIntro, statusFaqs, statusHero, statusOverview, statusSections } from '../data/statusPage';
 import PageLayout from '../layouts/PageLayout.astro';
-import { breadcrumbJsonLd } from '../utils/jsonld';
+import { breadcrumbJsonLd, faqJsonLd } from '../utils/jsonld';
 import { homeBreadcrumb } from '../utils/seo';
 
 const breadcrumbs = [homeBreadcrumb(), { label: 'Status', path: '/status/' }];
+const sectionEntries = statusSections.map((section) => ({
+  ...section,
+  game: getGameById(section.gameId),
+  status: getStatus(section.gameId),
+}));
 ---
 
-<PageLayout seo={pageSeo.status} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
-  <section class="section">
+<PageLayout
+  seo={pageSeo.status}
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(statusFaqs)]}
+>
+  <Hero eyebrow={statusHero.eyebrow} title={statusHero.title} description={statusHero.description}>
+    <Fragment slot="actions">
+      <Cta label="Open the CS2 product page" href="/cs2/" />
+      <Cta label="Browse FACEIT games" href="/" variant="secondary" />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">Configured snapshot</p>
+      <p class="hero-panel__title">Four FACEIT titles</p>
+      <p>
+        Safe, undetected-oriented labels are stored per game. Read the board, then continue to the
+        matching product page.
+      </p>
+      <ul class="hero-panel__list">
+        {
+          games.map((game) => {
+            const status = getStatus(game.id);
+
+            return (
+              <li>
+                <a href={game.path}>{game.shortName}</a>
+                <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+              </li>
+            );
+          })
+        }
+      </ul>
+    </aside>
+  </Hero>
+
+  <section class="section" aria-labelledby={statusOverview.titleId}>
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="How this hub works"
+        title={statusOverview.title}
+        titleId={statusOverview.titleId}
+        description={statusOverview.description}
+      />
+      <p>{statusOverview.body}</p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby={statusBoardIntro.titleId}>
     <div class="container">
       <SectionHeading
-        titleAs="h1"
-        eyebrow="Operations"
-        title="Detection and availability status"
-        description="This board reads separately configured status for each supported game. It can show undetected labels, run state, user counts, detection tests, and ban statistics. Placeholder values are marked and are not generated test timestamps."
+        eyebrow="Status board"
+        title={statusBoardIntro.title}
+        titleId={statusBoardIntro.titleId}
+        description={statusBoardIntro.description}
       />
-      <StatusBoard />
+      <StatusBoard showPlaceholders={false} showNotes={true} showGameCta={true} variant="featured" />
+    </div>
+  </section>
+
+  {
+    sectionEntries.map((entry, index) => (
+      <section
+        class:list={['section', index % 2 === 1 && 'section--secondary']}
+        aria-labelledby={entry.headingId}
+      >
+        <div class="container game-status">
+          <SectionHeading
+            eyebrow={`${entry.game.shortName} status`}
+            title={entry.heading}
+            titleId={entry.headingId}
+            description={entry.game.platformNote}
+          />
+          <p>{entry.context}</p>
+          <div class="status-panel">
+            <p class="mono">{entry.status.availabilityLabel}</p>
+            <StatusIndicator
+              detectionState={entry.status.detectionState}
+              runState={entry.status.runState}
+            />
+            {entry.status.editorialNote && <p>{entry.status.editorialNote}</p>}
+          </div>
+          <Cta label={entry.ctaLabel} href={entry.game.path} variant="secondary" />
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section" aria-labelledby="status-faq-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Status questions"
+        title="FACEIT cheat status FAQ"
+        titleId="status-faq-heading"
+        description="Answers about this hub only. Broader platform questions stay on the site-wide FAQ."
+      />
+      <Faq items={statusFaqs} />
+      <p class="board-link">
+        Still choosing a title?
+        <a href="/">Return to the FACEIT provider overview</a>
+        or
+        <a href="/faq/">read the site-wide FAQ</a>.
+      </p>
     </div>
   </section>
 </PageLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(124 58 237 / 0.28);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-panel__list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-panel__list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.55rem;
+  }
+
+  .hero-panel__list a,
+  .copy-block a,
+  .board-link a {
+    color: #fff;
+  }
+
+  .copy-block,
+  .game-status {
+    max-width: 46rem;
+  }
+
+  .copy-block :global(.section-heading),
+  .game-status :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .status-panel {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1.25rem 0 1.35rem;
+    padding: 1.15rem 1.2rem 1.25rem;
+    border: 1px solid rgb(124 58 237 / 0.22);
+    border-radius: var(--radius-md);
+    background:
+      linear-gradient(180deg, rgb(124 58 237 / 0.08), transparent 56%),
+      var(--bg-secondary);
+  }
+
+  .board-link {
+    margin-top: 1.25rem;
+  }
+
+  @media (min-width: 840px) {
+    .section--secondary :global(.status-board) {
+      max-width: none;
+    }
+  }
+</style>

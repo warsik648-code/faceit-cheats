@@ -5,17 +5,32 @@ import StatusIndicator from './StatusIndicator.astro';
 
 interface Props {
   showPlaceholders?: boolean;
+  showNotes?: boolean;
+  showGameCta?: boolean;
+  variant?: 'default' | 'featured';
 }
 
-const { showPlaceholders = true } = Astro.props;
+const {
+  showPlaceholders = true,
+  showNotes = true,
+  showGameCta = false,
+  variant = 'default',
+} = Astro.props;
+
+const columnCount = 3 + (showPlaceholders ? 1 : 0) + (showGameCta ? 1 : 0);
 ---
 
-<div class="status-board" role="table" aria-label="Per-game detection and availability">
+<div
+  class:list={['status-board', `status-board--${variant}`, `status-board--cols-${columnCount}`]}
+  role="table"
+  aria-label="Per-game detection and availability"
+>
   <div class="status-board__head" role="row">
     <span role="columnheader">Game</span>
     <span role="columnheader">Detection</span>
     <span role="columnheader">Availability</span>
     {showPlaceholders && <span role="columnheader">Placeholder figures</span>}
+    {showGameCta && <span role="columnheader">Game page</span>}
   </div>
   {
     games.map((game) => {
@@ -23,21 +38,28 @@ const { showPlaceholders = true } = Astro.props;
 
       return (
         <div class="status-board__row" role="row">
-          <div role="cell">
+          <div role="cell" data-label="Game">
             <a href={game.path}>{game.name}</a>
-            <p class="note">{status.editorialNote}</p>
+            {showNotes && <p class="note">{status.editorialNote}</p>}
           </div>
-          <div role="cell">
+          <div role="cell" data-label="Detection">
             <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
           </div>
-          <div role="cell">
+          <div role="cell" data-label="Availability">
             <span class="mono">{status.availabilityLabel}</span>
           </div>
           {showPlaceholders && (
-            <div class="placeholders" role="cell">
+            <div class="placeholders" role="cell" data-label="Placeholder figures">
               <p>{status.placeholders.userCount}</p>
               <p>{status.placeholders.detectionTests}</p>
               <p>{status.placeholders.banStatistic}</p>
+            </div>
+          )}
+          {showGameCta && (
+            <div role="cell" data-label="Game page">
+              <a class="status-board__cta" href={game.path}>
+                Open {game.shortName}
+              </a>
             </div>
           )}
         </div>
@@ -52,6 +74,16 @@ const { showPlaceholders = true } = Astro.props;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     background: var(--bg-secondary);
+  }
+
+  .status-board--featured {
+    border-color: rgb(124 58 237 / 0.32);
+    background:
+      linear-gradient(180deg, rgb(124 58 237 / 0.12), transparent 36%),
+      var(--bg-secondary);
+    box-shadow:
+      var(--shadow-soft),
+      0 0 0 1px rgb(236 72 153 / 0.08);
   }
 
   .status-board__head,
@@ -78,6 +110,14 @@ const { showPlaceholders = true } = Astro.props;
     color: #fff;
     font-weight: 600;
     text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .status-board__cta {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.92rem;
+    font-weight: 600;
   }
 
   .note,
@@ -95,8 +135,22 @@ const { showPlaceholders = true } = Astro.props;
   @media (min-width: 840px) {
     .status-board__head,
     .status-board__row {
-      grid-template-columns: 1.4fr 0.9fr 0.8fr 1.2fr;
       align-items: start;
+    }
+
+    .status-board--cols-3 .status-board__head,
+    .status-board--cols-3 .status-board__row {
+      grid-template-columns: 1.4fr 0.95fr 0.9fr;
+    }
+
+    .status-board--cols-4 .status-board__head,
+    .status-board--cols-4 .status-board__row {
+      grid-template-columns: 1.35fr 0.9fr 0.85fr 0.85fr;
+    }
+
+    .status-board--cols-5 .status-board__head,
+    .status-board--cols-5 .status-board__row {
+      grid-template-columns: 1.2fr 0.8fr 0.75fr 1fr 0.75fr;
     }
   }
 
@@ -107,6 +161,22 @@ const { showPlaceholders = true } = Astro.props;
 
     .status-board__row {
       grid-template-columns: 1fr;
+    }
+
+    .status-board--featured .status-board__row {
+      gap: 0.85rem;
+      padding: 1.2rem 1.15rem 1.3rem;
+    }
+
+    .status-board--featured [role='cell']::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 0.35rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
     }
   }
 </style>

@@ -1,0 +1,68 @@
+---
+interface Props {
+  title: string;
+  note: string;
+}
+
+const { title, note } = Astro.props;
+---
+
+<div class="video-ph">
+  <div class="video-ph__frame" role="img" aria-label={title}>
+    <span class="video-ph__play" aria-hidden="true"></span>
+  </div>
+  <p class="video-ph__title">{title}</p>
+  <p>{note}</p>
+</div>
+
+<style>
+  .video-ph {
+    max-width: 46rem;
+  }
+
+  .video-ph__frame {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    border: 1px solid rgb(236 72 153 / 0.28);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(420px 180px at 50% 40%, rgb(124 58 237 / 0.18), transparent 60%),
+      var(--bg-secondary);
+  }
+
+  .video-ph__play {
+    width: 3.4rem;
+    height: 3.4rem;
+    border: 1px solid rgb(255 255 255 / 0.28);
+    border-radius: 50%;
+    background: rgb(4 3 6 / 0.35);
+    position: relative;
+  }
+
+  .video-ph__play::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 54%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0.45rem 0 0.45rem 0.75rem;
+    border-color: transparent transparent transparent #fff;
+    transform: translate(-50%, -50%);
+  }
+
+  .video-ph__title {
+    margin: 0.85rem 0 0.35rem;
+    color: #fff;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-ph__play {
+      box-shadow: none;
+    }
+  }
+</style>

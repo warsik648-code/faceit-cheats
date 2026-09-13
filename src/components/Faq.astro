@@ -3,15 +3,16 @@ import type { FaqItem } from '../data/faq';
 
 interface Props {
   items: FaqItem[];
+  group?: string;
 }
 
-const { items } = Astro.props;
+const { items, group = 'faq' } = Astro.props;
 ---
 
 <div class="faq">
   {
     items.map((item) => (
-      <details class="faq__item" name="faq">
+      <details class="faq__item" name={group}>
         <summary id={item.id}>{item.question}</summary>
         <p>{item.answer}</p>
       </details>
@@ -38,6 +39,7 @@ const { items } = Astro.props;
     padding: 1rem 0;
     font-weight: 600;
     letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
   }
 
   summary::-webkit-details-marker {
@@ -46,5 +48,6 @@ const { items } = Astro.props;
 
   .faq__item p {
     padding-bottom: 1rem;
+    overflow-wrap: anywhere;
   }
 </style>

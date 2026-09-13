@@ -1,11 +1,11 @@
 ---
-import { SITE } from '../data/site';
-import { supportUrl, transactionUrl } from '../utils/urls';
+import type { ExternalAction } from '../data/site';
+import { accessUrl, supportUrl, transactionUrl } from '../utils/urls';
 
 interface Props {
   label: string;
   variant?: 'primary' | 'secondary' | 'ghost';
-  destination?: 'transaction' | 'support' | 'internal';
+  destination?: ExternalAction | 'internal';
   href?: string;
   tracking?: Record<string, string>;
 }
@@ -21,15 +21,17 @@ const {
 const resolvedHref =
   destination === 'transaction'
     ? transactionUrl(tracking)
-    : destination === 'support'
-      ? supportUrl(tracking)
-      : href;
+    : destination === 'access'
+      ? accessUrl(tracking)
+      : destination === 'support'
+        ? supportUrl(tracking)
+        : href;
 
 if (!resolvedHref) {
-  throw new Error('Cta requires href when destination is internal.');
+  throw new Error('Cta requires href when destination is internal, or a configured external URL.');
 }
 
-const isExternal = destination === 'transaction' || destination === 'support';
+const isExternal = destination !== 'internal';
 const rel = isExternal ? 'nofollow noopener noreferrer' : undefined;
 const target = isExternal ? '_blank' : undefined;
 ---
@@ -41,11 +43,6 @@ const target = isExternal ? '_blank' : undefined;
   target={target}
 >
   <span>{label}</span>
-  {
-    destination === 'transaction' && (
-      <span class="cta__hint">Opens {new URL(SITE.external.transactionUrl).host}</span>
-    )
-  }
 </a>
 
 <style>
@@ -54,6 +51,7 @@ const target = isExternal ? '_blank' : undefined;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.15rem;
+    max-width: 100%;
     padding: 0.85rem 1.15rem;
     border-radius: 0.8rem;
     border: 1px solid transparent;
@@ -85,15 +83,6 @@ const target = isExternal ? '_blank' : undefined;
     color: #fff;
     text-decoration: underline;
     text-underline-offset: 0.2em;
-  }
-
-  .cta__hint {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-transform: none;
-    opacity: 0.8;
   }
 
   @media (hover: hover) {

@@ -1,14 +1,327 @@
 ---
-import GamePageShell from '../components/GamePageShell.astro';
-import { getGameById } from '../data/games';
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import Hero from '../components/Hero.astro';
+import ScreenshotGallery from '../components/ScreenshotGallery.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusIndicator from '../components/StatusIndicator.astro';
+import VideoPlaceholder from '../components/VideoPlaceholder.astro';
+import { getGameById, games } from '../data/games';
+import { r6Faqs, r6Features, r6Hero, r6Shots, r6Steps } from '../data/rainbowSixSiege';
+import { getStatus } from '../data/status';
 import PageLayout from '../layouts/PageLayout.astro';
-import { breadcrumbJsonLd } from '../utils/jsonld';
+import { breadcrumbJsonLd, faqJsonLd } from '../utils/jsonld';
 import { homeBreadcrumb } from '../utils/seo';
 
 const game = getGameById('rainbow-six-siege');
+const status = getStatus('rainbow-six-siege');
+const related = games.filter((entry) => entry.id !== game.id);
 const breadcrumbs = [homeBreadcrumb(), { label: game.name, path: game.path }];
 ---
 
-<PageLayout seo={game.seo} breadcrumbs={breadcrumbs} extraJsonLd={[breadcrumbJsonLd(breadcrumbs)]}>
-  <GamePageShell game={game} />
+<PageLayout
+  seo={game.seo}
+  breadcrumbs={breadcrumbs}
+  extraJsonLd={[breadcrumbJsonLd(breadcrumbs), faqJsonLd(r6Faqs)]}
+>
+  <Hero eyebrow={r6Hero.eyebrow} title={r6Hero.title} description={r6Hero.description}>
+    <Fragment slot="actions">
+      <Cta label="Get Siege access" destination="access" tracking={{ ref: 'r6-hero', game: 'rainbow-six-siege' }} />
+      <Cta label="Confirm Siege on status" href="/status/" variant="secondary" />
+    </Fragment>
+    <aside slot="aside" class="hero-panel">
+      <p class="mono">Operator title</p>
+      <p class="hero-panel__title">{game.name}</p>
+      <p>
+        Configured as {status.availabilityLabel.toLowerCase()}. Detection label:
+        {status.detectionState}. Undetected, safe-from-anti-cheat wording belongs on the
+        <a href="/status/">status page</a>.
+      </p>
+      <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+    </aside>
+  </Hero>
+
+  <section class="section section--secondary" aria-labelledby="r6-features-heading" id="r6-features">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Site tools"
+        title="What this Rainbow Six Siege FACEIT cheat includes"
+        titleId="r6-features-heading"
+        description="If you are comparing the best R6 FACEIT cheat, start with operators, cameras, and recoil — not a copied CS2 or Valorant grid. This is the premium R6 FACEIT cheat list."
+      />
+      <div class="feature-grid">
+        {r6Features.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
+      <p class="copy-narrow">
+        The offering is described as undetected and safe from Siege anti-cheat, with little to no
+        bans reported against the configured label. This page does not publish steps for defeating
+        or disabling that stack.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="r6-context-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Operators and sites"
+        title="Siege stays Siege — FACEIT is the extra ladder"
+        titleId="r6-context-heading"
+        description="An R6 FACEIT hack or R6S FACEIT hack still launches Ubisoft’s client. FACEIT does not fork Rainbow Six Siege into another game."
+      />
+      <p>
+        Rounds are built on information: drones, cameras, destructible floors, and gadget lines
+        that change after every prep phase. Positioning on a site is not the same problem as an
+        OW2 team fight or a Valorant execute. This listing is written around those prep-and-plant
+        minutes.
+      </p>
+      <p>
+        An R6S FACEIT cheat is for FACEIT brackets and for ordinary matchmaking. If you wanted
+        rifle economy or agent kits instead, use
+        <a href="/cs2/">the CS2 product page</a>,
+        <a href="/valorant/">the Valorant listing</a>,
+        or
+        <a href="/overwatch-2/">the Overwatch 2 route</a>.
+        The
+        <a href="/">FACEIT hub</a>
+        remains the directory.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="r6-showcase-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Stills"
+        title="Siege preview slots"
+        titleId="r6-showcase-heading"
+        description="Add WebP captures to the Rainbow Six Siege image folder when they are ready. Missing files stay as designed placeholders."
+      />
+      <ScreenshotGallery items={r6Shots} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="r6-video-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Clip"
+        title="Site-take showcase later"
+        titleId="r6-video-heading"
+        description="A static frame only. No third-party player and no autoplay until you add a file on purpose."
+      />
+      <VideoPlaceholder
+        title="Rainbow Six Siege site showcase"
+        note="Reserved for a future operator clip. Nothing loads from YouTube or Vimeo on this page."
+      />
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="r6-flow-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Product path"
+        title="Configure the site, then continue"
+        titleId="r6-flow-heading"
+        description="A premium R6 FACEIT cheat should not dump every operator onto one default. Set the profile, read status, then use access."
+      />
+      <ol class="steps">
+        {
+          r6Steps.map((step, index) => (
+            <li>
+              <p class="mono">0{index + 1}</p>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="cluster flow-actions">
+        <Cta
+          label="Continue to Siege access"
+          destination="access"
+          tracking={{ ref: 'r6-flow', game: 'rainbow-six-siege' }}
+        />
+        <Cta label="Read platform questions" href="/faq/" variant="secondary" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="r6-status-heading">
+    <div class="container copy-block">
+      <SectionHeading
+        eyebrow="Configured label"
+        title="Siege availability snapshot"
+        titleId="r6-status-heading"
+        description="Only the stored configuration is shown. No invented test counts, user totals, ban statistics, percentages, timestamps, or uptime."
+      />
+      <div class="status-panel">
+        <StatusIndicator detectionState={status.detectionState} runState={status.runState} />
+        <p>{status.availabilityLabel}. Detection: {status.detectionState}.</p>
+      </div>
+      <p>
+        <a href="/status/">Open the Siege row on the status board</a>
+        to confirm undetected status and any “little to no bans reported” note against the current
+        editorial label.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--secondary" aria-labelledby="r6-faq-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Siege questions"
+        title="Rainbow Six answers before checkout"
+        titleId="r6-faq-heading"
+        description="Operator and gadget questions stay here. Broader FACEIT questions belong on the main FAQ."
+      />
+      <Faq items={r6Faqs} />
+      <p class="board-link">
+        <a href="/faq/">Open the site FAQ</a>
+        ·
+        <Cta label="Get support" destination="support" variant="ghost" tracking={{ ref: 'r6-faq' }} />
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="other-games-heading">
+    <div class="container">
+      <SectionHeading
+        eyebrow="More titles"
+        title="Explore other FACEIT games"
+        titleId="other-games-heading"
+      />
+      <nav aria-label="Other supported games">
+        <ul class="related">
+          {
+            related.map((entry) => (
+              <li>
+                <a href={entry.path}>
+                  {entry.id === 'cs2'
+                    ? 'CS2 commercial page'
+                    : entry.id === 'valorant'
+                      ? 'Valorant product listing'
+                      : entry.id === 'overwatch-2'
+                        ? 'Overwatch 2 route'
+                        : entry.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .hero-panel {
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(200deg, rgb(124 58 237 / 0.1), rgb(236 72 153 / 0.06) 48%, transparent 70%),
+      var(--bg-secondary);
+  }
+
+  .hero-panel__title {
+    margin: 0.45rem 0 0.6rem;
+    color: #fff;
+    font-size: 1.55rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-panel a,
+  .copy-block a,
+  .copy-narrow a,
+  .board-link a {
+    color: #fff;
+  }
+
+  .copy-block,
+  .copy-narrow {
+    max-width: 46rem;
+  }
+
+  .copy-narrow {
+    margin-top: 1.25rem;
+  }
+
+  .copy-block :global(.section-heading) {
+    margin-bottom: 1.1rem;
+  }
+
+  .feature-grid,
+  .steps {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .steps {
+    list-style: none;
+  }
+
+  .steps li {
+    min-width: 0;
+    padding: 1.15rem 1.2rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .steps h3 {
+    margin: 0.35rem 0 0.45rem;
+  }
+
+  .flow-actions {
+    margin-top: 1.4rem;
+  }
+
+  .status-panel {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .board-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 0.85rem;
+    margin-top: 1.25rem;
+  }
+
+  .related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    color: #fff;
+  }
+
+  @media (min-width: 800px) {
+    .feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .feature-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
